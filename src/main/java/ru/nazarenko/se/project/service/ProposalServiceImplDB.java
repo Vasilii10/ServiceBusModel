@@ -18,10 +18,10 @@ public class ProposalServiceImplDB implements ProposalService {
 		// FIXME: 25/04/2021 тестовый случай!
 		ProposalTable student = new ProposalTable(
 			1,
-			ShipmentMethod.SHIP.toString(),
+			ShipmentMethod.SHIP,
 			"все дороги ведут в москву",
 			"из краснодара",
-			ServiceProposalStatus.IN_SEQUECE.toString(),
+			ServiceProposalStatus.IN_SEQUECE,
 			"h"
 		);
 

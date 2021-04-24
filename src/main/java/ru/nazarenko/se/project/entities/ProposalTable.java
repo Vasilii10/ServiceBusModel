@@ -8,7 +8,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "proposal")
-//@TypeDef(name = "mood", typeClass = PostgreSQLEnumType.class)
+@TypeDef(name = "shipment_method", typeClass = PostgreSQLEnumType.class)
+@TypeDef(name = "service_proposal_status", typeClass = PostgreSQLEnumType.class)
 public class ProposalTable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +17,7 @@ public class ProposalTable {
 	private int id;
 
 	@Column(name = "shipment_method")
-	private String shipmentMethod;
+	private ShipmentMethod shipmentMethod;
 
 	@Column(name = "destination")
 	private String destination;
@@ -25,12 +26,12 @@ public class ProposalTable {
 	private String depature;
 
 	@Column(name = "service_proposal_status")
-	private String service_proposal_status;
+	private ServiceProposalStatus service_proposal_status;
 
 	@Column(name = "track_number")
 	private String track_number;
 
-	public ProposalTable(int id, String shipmentMethod, String destination, String depature, String service_proposal_status, String track_number) {
+	public ProposalTable(int id, ShipmentMethod shipmentMethod, String destination, String depature, ServiceProposalStatus service_proposal_status, String track_number) {
 		this.id = id;
 		this.shipmentMethod = shipmentMethod;
 		this.destination = destination;
