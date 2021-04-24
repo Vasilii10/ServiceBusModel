@@ -27,7 +27,7 @@
         <property name="hibernate.dbcp.maxIdle">10</property>
         <property name="hibernate.dbcp.minIdle">5</property>
         <property name="hibernate.dbcp.maxWaitMillis">-1</property>
-        <mapping class="ru.nazarenko.se.project.entities.ProposalTable"/>
+        <mapping class="ru.nazarenko.se.project.model.Proposal"/>
     </session-factory>
 </hibernate-configuration>
 

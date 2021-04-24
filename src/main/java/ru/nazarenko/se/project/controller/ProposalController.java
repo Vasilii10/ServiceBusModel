@@ -20,7 +20,7 @@ public class ProposalController {
 
 	/**
 	 * Создание заявки в сервисе
-	 *
+	 * + запись в БД
 	 */
 	@PostMapping(value = "/proposal/new")
 	public ResponseEntity<?> create(@RequestBody Proposal proposal) {
@@ -41,7 +41,7 @@ public class ProposalController {
 	}
 
 	/**
-	 *Получение заявки по id
+	 * Получение заявки по id
 	 */
 	@GetMapping(value = "/proposals/{id}")
 	public ResponseEntity<Proposal> read(@PathVariable(name = "id") int id) {
@@ -53,7 +53,7 @@ public class ProposalController {
 	}
 
 	/**
-	 *Получение статса заявки по id
+	 * Получение статса заявки по id
 	 */
 	@GetMapping(value = "/proposal/status/{id}")
 	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "id") int id) {
@@ -66,7 +66,7 @@ public class ProposalController {
 	}
 
 	/**
-	 *Получение статса заявки по трек номеру
+	 * Получение статса заявки по трек номеру
 	 */
 	@GetMapping(value = "/proposal/status/track/{treck}")
 	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "treck") String treck) {
@@ -83,7 +83,7 @@ public class ProposalController {
 
 
 	/**
-	 обновлений всех полей заявки
+	 * обновлений всех полей заявки
 	 */
 	@PutMapping(value = "/proposal/{id}")
 	public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody Proposal proposal) {
@@ -96,6 +96,7 @@ public class ProposalController {
 
 
 	// ------взаимодействие с СУТ --------
+
 	/**
 	 * Передача новых заявок для СУТ
 	 */

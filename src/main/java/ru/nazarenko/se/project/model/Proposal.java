@@ -1,33 +1,47 @@
 package ru.nazarenko.se.project.model;
 
-// FIXME: 24/04/2021 Builder is needed
-public class Proposal {
+import org.hibernate.annotations.TypeDef;
+import ru.nazarenko.se.project.PostgreSQLEnumType;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "proposal")
+@TypeDef(name = "shipment_method", typeClass = PostgreSQLEnumType.class)
+@TypeDef(name = "service_proposal_status", typeClass = PostgreSQLEnumType.class)
+public class Proposal {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long proposalId;
+
+	@Column(name = "shipment_method")
 	private ShipmentMethod shipmentMethod;
+
+	@Column(name = "destination")
 	private String destinationPlace;
+
+	@Column(name = "depature")
 	private String depaturePlace;
 
+	@Column(name = "service_proposal_status")
 	private ServiceProposalStatus serviceProposalStatus;
-	private String trecNumber; // ткущее местоположение
-	//private ProposalDescriptor proposalDescriptor;
 
+	@Column(name = "track_number")
+	private String trecNumber;
 
-	public Proposal(long proposalId,
-					ShipmentMethod shipmentMethod,
-					String destinationPlace,
-					String depaturePlace,
-					ServiceProposalStatus serviceProposalStatus,
-					String trecNumber
-					) {
+	public Proposal(long proposalId, ShipmentMethod shipmentMethod,
+					String destination, String depature, ServiceProposalStatus service_proposal_status,
+					String track_number) {
 		this.proposalId = proposalId;
 		this.shipmentMethod = shipmentMethod;
-		this.destinationPlace = destinationPlace;
-		this.depaturePlace = depaturePlace;
-		this.serviceProposalStatus = serviceProposalStatus;
-		this.trecNumber = trecNumber;
+		this.destinationPlace = destination;
+		this.depaturePlace = depature;
+		this.serviceProposalStatus = service_proposal_status;
+		this.trecNumber = track_number;
+	}
 
-
+	public Proposal() {
 	}
 
 	public long getProposalId() {
@@ -77,6 +91,4 @@ public class Proposal {
 	public void setTrecNumber(String trecNumber) {
 		this.trecNumber = trecNumber;
 	}
-
-
 }

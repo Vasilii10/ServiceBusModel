@@ -3,11 +3,12 @@ package ru.nazarenko.se.project.service;
 import org.hibernate.*;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import ru.nazarenko.se.project.entities.ProposalTable;
 import ru.nazarenko.se.project.model.*;
 import ru.nazarenko.se.project.util.HibernateUtil;
 
 import java.util.List;
+
+import static ru.nazarenko.se.project.entities.ProposalDAO.findById;
 
 @Service
 @Primary
@@ -16,7 +17,7 @@ public class ProposalServiceImplDB implements ProposalService {
 	public void create(Proposal proposal) {
 
 		// FIXME: 25/04/2021 тестовый случай!
-		ProposalTable student = new ProposalTable(
+		Proposal student = new Proposal(
 			1,
 			ShipmentMethod.SHIP,
 			"все дороги ведут в москву",
@@ -41,7 +42,7 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public Proposal readBy(long id) {
-		return null;
+		return findById(1);
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class ProposalServiceImplDB implements ProposalService {
 	}
 
 	@Override
-	public ServiceProposalStatus readBy(String treck) {
+	public ServiceProposalStatus readBy(String track) {
 		return null;
 	}
 
@@ -69,7 +70,7 @@ public class ProposalServiceImplDB implements ProposalService {
 		return false;
 	}
 
-	public static void writeProposalInDB(ProposalTable testTable) throws Exception {
+	public static void writeProposalInDB(Proposal testTable) throws Exception {
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
