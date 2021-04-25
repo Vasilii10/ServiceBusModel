@@ -8,7 +8,7 @@ import ru.nazarenko.se.project.util.HibernateUtil;
 
 import java.util.List;
 
-import static ru.nazarenko.se.project.entities.ProposalDAO.findById;
+import static ru.nazarenko.se.project.entities.ProposalDAO.*;
 
 @Service
 @Primary
@@ -37,7 +37,7 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public List<Proposal> readAll() {
-		return null;
+		return findAll();
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public List<Proposal> readNewProposals() {
-		return null;
+		return findNew();
 	}
 
 	@Override

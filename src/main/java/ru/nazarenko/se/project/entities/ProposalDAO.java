@@ -1,7 +1,9 @@
 package ru.nazarenko.se.project.entities;
 
-import ru.nazarenko.se.project.model.Proposal;
+import ru.nazarenko.se.project.model.*;
 import ru.nazarenko.se.project.util.HibernateUtil;
+
+import java.util.List;
 
 public class ProposalDAO {
 
@@ -9,6 +11,27 @@ public class ProposalDAO {
 		return HibernateUtil.getSessionFactory().openSession().get(Proposal.class, id);
 	}
 
+
+	public static List<Proposal> findAll() {
+		return
+			(List<Proposal>) HibernateUtil.getSessionFactory().
+				openSession()
+				.createQuery("From Proposal")
+				.list();
+
+
+	}
+
+	public static List<Proposal> findNew() {
+		return
+			(List<Proposal>) HibernateUtil.getSessionFactory().
+				openSession()
+				.createQuery("From Proposal where serviceProposalStatus = :createdStatus")
+				.setParameter("createdStatus", ServiceProposalStatus.NEW_CREATED)
+				.list();
+
+
+	}
 
 	// TODO: 25/04/2021  
 }
