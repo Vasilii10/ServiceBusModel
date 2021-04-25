@@ -12,6 +12,13 @@ public class Application {
 	public static void main(String[] args) {
 
 		//// FIXME: 25/04/2021 поставить в загрузчик
+		hiberConfigLoader();
+
+
+		SpringApplication.run(Application.class, args);
+	}
+
+	private static void hiberConfigLoader() {
 		try {
 			Configuration configuration = new Configuration();
 			configuration.configure();
@@ -20,9 +27,6 @@ public class Application {
 		} catch (HibernateException ex) {
 			throw new ExceptionInInitializerError(ex);
 		}
-
-
-		SpringApplication.run(Application.class, args);
 	}
 
 

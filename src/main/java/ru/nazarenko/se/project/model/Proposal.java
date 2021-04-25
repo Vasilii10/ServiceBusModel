@@ -1,14 +1,10 @@
 package ru.nazarenko.se.project.model;
 
-import org.hibernate.annotations.TypeDef;
-import ru.nazarenko.se.project.PostgreSQLEnumType;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "proposal")
-@TypeDef(name = "shipment_method", typeClass = PostgreSQLEnumType.class)
-@TypeDef(name = "service_proposal_status", typeClass = PostgreSQLEnumType.class)
 public class Proposal {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +12,7 @@ public class Proposal {
 	private long proposalId;
 
 	@Column(name = "shipment_method")
+	@Enumerated(EnumType.STRING)
 	private ShipmentMethod shipmentMethod;
 
 	@Column(name = "destination")
@@ -25,20 +22,24 @@ public class Proposal {
 	private String depaturePlace;
 
 	@Column(name = "service_proposal_status")
+	@Enumerated(EnumType.STRING)
 	private ServiceProposalStatus serviceProposalStatus;
 
 	@Column(name = "track_number")
-	private String trecNumber;
+	private String trackNumber;
 
-	public Proposal(long proposalId, ShipmentMethod shipmentMethod,
-					String destination, String depature, ServiceProposalStatus service_proposal_status,
+	public Proposal(int proposalId,
+					ShipmentMethod shipmentMethod,
+					String destination,
+					String depature,
+					ServiceProposalStatus service_proposal_status,
 					String track_number) {
 		this.proposalId = proposalId;
 		this.shipmentMethod = shipmentMethod;
 		this.destinationPlace = destination;
 		this.depaturePlace = depature;
 		this.serviceProposalStatus = service_proposal_status;
-		this.trecNumber = track_number;
+		this.trackNumber = track_number;
 	}
 
 	public Proposal() {
@@ -84,11 +85,11 @@ public class Proposal {
 		this.serviceProposalStatus = serviceProposalStatus;
 	}
 
-	public String getTrecNumber() {
-		return trecNumber;
+	public String getTrackNumber() {
+		return trackNumber;
 	}
 
-	public void setTrecNumber(String trecNumber) {
-		this.trecNumber = trecNumber;
+	public void setTrackNumber(String trecNumber) {
+		this.trackNumber = trecNumber;
 	}
 }

@@ -1,7 +1,6 @@
 package ru.nazarenko.se.project.service;
 
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.nazarenko.se.project.model.*;
 
@@ -79,7 +78,7 @@ public class ProposalServiceImpl implements ProposalService {
 		Map<Long, Proposal> map = new HashMap<>();
 
 		for (Map.Entry<Long, Proposal> entry : PROPOSAL_REPOSITORY_MAP.entrySet()) {
-			if (entry.getValue().getTrecNumber().equals(treck)) {
+			if (entry.getValue().getTrackNumber().equals(treck)) {
 				return entry.getValue().getProposalStatus();
 			}
 		}

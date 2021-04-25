@@ -17,18 +17,18 @@ public class ProposalServiceImplDB implements ProposalService {
 	public void create(Proposal proposal) {
 
 		// FIXME: 25/04/2021 тестовый случай!
-		Proposal student = new Proposal(
-			1,
-			ShipmentMethod.SHIP,
-			"все дороги ведут в москву",
-			"из краснодара",
-			ServiceProposalStatus.IN_SEQUECE,
-			"h"
-		);
+//		Proposal student = new Proposal(
+//			1,
+//			ShipmentMethod.SHIP,
+//			"все дороги ведут в москву",
+//			"из краснодара",
+//			ServiceProposalStatus.IN_SEQUECE,
+//			"h"
+//		);
 
 		try {
 
-			writeProposalInDB(student);
+			writeInDB(proposal);
 			System.err.println("Успешно");
 		} catch (Exception e) {
 			System.err.println("Ошибка!");
@@ -42,7 +42,7 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public Proposal readBy(long id) {
-		return findById(1);
+		return findById(id);
 	}
 
 	@Override
@@ -67,15 +67,36 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public boolean updateStatusBy(long id, ServiceProposalStatus status) {
-		return false;
-	}
-
-	public static void writeProposalInDB(Proposal testTable) throws Exception {
+		// TODO: 25/04/2021 предусмотреть исключение если статуса нет  
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
 
-			session.save(testTable);
+			session.createQuery("update Proposal set serviceProposalStatus = :newStatus " +
+				"where id = :id")
+				.setParameter("newStatus", status)
+				.setParameter("id", id)
+				.executeUpdate();
+
+			transaction.commit();
+
+			return true;
+		} catch (Exception e) {
+
+			if (transaction != null) {
+				transaction.rollback();
+			}
+
+			return false;
+		}
+	}
+
+	public static void writeInDB(Object object) throws Exception {
+		Transaction transaction = null;
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			transaction = session.beginTransaction();
+
+			session.save(object);
 			transaction.commit();
 		} catch (Exception e) {
 			if (transaction != null) {
@@ -86,3 +107,13 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	}
 }
+/**
+ * {
+ * "proposalId": 22222,
+ * "shipmentMethod": "SHIP",
+ * "destinationPlace": "j",
+ * "depaturePlace": "из",
+ * "trackNumber": "wewew",
+ * "proposalStatus": "IN_SEQUECE"
+ * }
+ */

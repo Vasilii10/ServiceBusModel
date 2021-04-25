@@ -8,4 +8,7 @@ public class ProposalDAO {
 	public static Proposal findById(long id) {
 		return HibernateUtil.getSessionFactory().openSession().get(Proposal.class, id);
 	}
+
+
+	// TODO: 25/04/2021  
 }

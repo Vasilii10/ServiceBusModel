@@ -44,7 +44,7 @@ public class ProposalController {
 	 * Получение заявки по id
 	 */
 	@GetMapping(value = "/proposals/{id}")
-	public ResponseEntity<Proposal> read(@PathVariable(name = "id") int id) {
+	public ResponseEntity<Proposal> read(@PathVariable(name = "id") long id) {
 		final Proposal proposal = proposalService.readBy(id);
 
 		return proposal != null
@@ -53,7 +53,7 @@ public class ProposalController {
 	}
 
 	/**
-	 * Получение статса заявки по id
+	 * Получение статeса заявки по id
 	 */
 	@GetMapping(value = "/proposal/status/{id}")
 	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "id") int id) {
@@ -68,9 +68,9 @@ public class ProposalController {
 	/**
 	 * Получение статса заявки по трек номеру
 	 */
-	@GetMapping(value = "/proposal/status/track/{treck}")
-	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "treck") String treck) {
-		final ServiceProposalStatus proposalStatus = proposalService.readBy(treck); // вынести на
+	@GetMapping(value = "/proposal/status/track/{track_number}")
+	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "track_number") String trackNumber) {
+		final ServiceProposalStatus proposalStatus = proposalService.readBy(trackNumber); // вынести на
 		// другой слой
 
 		return proposalStatus != null
@@ -78,8 +78,6 @@ public class ProposalController {
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-
-// TODO: 24/04/2021 получение статуса для клиента по трек номеру
 
 
 	/**
@@ -112,7 +110,7 @@ public class ProposalController {
 	/**
 	 * обновление статуса по айдишке
 	 */
-	@PutMapping(value = "/proposal/update/{id}")
+	@PutMapping(value = "/proposal/{id}/update")
 	public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody ServiceProposalStatus newStatus) {
 		final boolean isUpdated = proposalService.updateStatusBy(id, newStatus);
 
