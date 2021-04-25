@@ -27,7 +27,7 @@ public interface ProposalService {
 	 * @param id - ID клиента
 	 * @return - объект клиента с заданным ID
 	 */
-	Proposal readBy(long id);
+	Proposal readStatusBy(long id);
 
 	/**
 	 * Обновляет клиента с заданным ID,
@@ -47,7 +47,7 @@ public interface ProposalService {
 	 */
 	boolean delete(long id);
 
-	ServiceProposalStatus readBy(String treck);
+	ServiceProposalStatus readStatusBy(String treck);
 
 	List<Proposal> readNewProposals();
 

@@ -45,19 +45,22 @@ public class ProposalController {
 	 */
 	@GetMapping(value = "/proposals/{id}")
 	public ResponseEntity<Proposal> read(@PathVariable(name = "id") long id) {
-		final Proposal proposal = proposalService.readBy(id);
+		final Proposal proposal = proposalService.readStatusBy(id);
 
 		return proposal != null
 			? new ResponseEntity<>(proposal, HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+
+
+
 	/**
 	 * Получение статeса заявки по id
 	 */
 	@GetMapping(value = "/proposal/status/{id}")
 	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "id") int id) {
-		final ServiceProposalStatus proposalStatus = proposalService.readBy(id).getProposalStatus(); // вынести на
+		final ServiceProposalStatus proposalStatus = proposalService.readStatusBy(id).getProposalStatus(); // вынести на
 		// другой слой
 
 		return proposalStatus != null
@@ -67,17 +70,18 @@ public class ProposalController {
 
 	/**
 	 * Получение статса заявки по трек номеру
+	 *
+	 * сделали
 	 */
 	@GetMapping(value = "/proposal/status/track/{track_number}")
 	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "track_number") String trackNumber) {
-		final ServiceProposalStatus proposalStatus = proposalService.readBy(trackNumber); // вынести на
+		final ServiceProposalStatus proposalStatus = proposalService.readStatusBy(trackNumber); // вынести на
 		// другой слой
 
 		return proposalStatus != null
 			? new ResponseEntity<>(proposalStatus, HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-
 
 
 	/**
@@ -97,6 +101,8 @@ public class ProposalController {
 
 	/**
 	 * Передача новых заявок для СУТ
+	 *
+	 * сделали
 	 */
 	@GetMapping(value = "/proposals/new")
 	public ResponseEntity<List<Proposal>> readNew() {
@@ -109,9 +115,12 @@ public class ProposalController {
 
 	/**
 	 * обновление статуса по айдишке
+	 *
+	 * сделали
 	 */
 	@PutMapping(value = "/proposal/{id}/update")
-	public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody ServiceProposalStatus newStatus) {
+	public ResponseEntity<?> update(@PathVariable(name = "id") int id,
+									@RequestBody ServiceProposalStatus newStatus) {
 		final boolean isUpdated = proposalService.updateStatusBy(id, newStatus);
 
 		return isUpdated

@@ -11,6 +11,10 @@ public class ProposalDAO {
 		return HibernateUtil.getSessionFactory().openSession().get(Proposal.class, id);
 	}
 
+//	public static ServiceProposalStatus findByTrack(String id) throws NoSuchFieldException {
+//		return HibernateUtil.getSessionFactory().openSession().get(String.valueOf(Proposal.class.getField("service_proposal_status")), id);
+//	}
+
 
 	public static List<Proposal> findAll() {
 		return

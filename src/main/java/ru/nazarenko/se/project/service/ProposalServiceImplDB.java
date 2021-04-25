@@ -41,7 +41,7 @@ public class ProposalServiceImplDB implements ProposalService {
 	}
 
 	@Override
-	public Proposal readBy(long id) {
+	public Proposal readStatusBy(long id) {
 		return findById(id);
 	}
 
@@ -56,8 +56,22 @@ public class ProposalServiceImplDB implements ProposalService {
 	}
 
 	@Override
-	public ServiceProposalStatus readBy(String track) {
-		return null;
+	public ServiceProposalStatus readStatusBy(String track) {
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+			ServiceProposalStatus s = (ServiceProposalStatus)
+				session.createQuery("select serviceProposalStatus" +
+				" from Proposal where trackNumber = :paramName")
+				.setParameter("paramName", track)
+				.uniqueResult();
+
+			return s;
+		} catch (Exception e) {
+			System.err.println("ОЩибочка");
+
+			return ServiceProposalStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!
+		}
+
 	}
 
 	@Override

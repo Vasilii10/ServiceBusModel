@@ -53,7 +53,7 @@ public class ProposalServiceImpl implements ProposalService {
 	}
 
 	@Override
-	public Proposal readBy(long id) {
+	public Proposal readStatusBy(long id) {
 		return PROPOSAL_REPOSITORY_MAP.get(id);
 	}
 
@@ -74,7 +74,7 @@ public class ProposalServiceImpl implements ProposalService {
 	}
 
 	@Override
-	public ServiceProposalStatus readBy(String treck) {
+	public ServiceProposalStatus readStatusBy(String treck) {
 		Map<Long, Proposal> map = new HashMap<>();
 
 		for (Map.Entry<Long, Proposal> entry : PROPOSAL_REPOSITORY_MAP.entrySet()) {
