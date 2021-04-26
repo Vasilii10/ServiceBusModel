@@ -28,20 +28,6 @@ public class Proposal {
 	@Column(name = "track_number")
 	private String trackNumber;
 
-	public Proposal(int proposalId,
-					ShipmentMethod shipmentMethod,
-					String destination,
-					String depature,
-					ServiceProposalStatus service_proposal_status,
-					String track_number) {
-		this.proposalId = proposalId;
-		this.shipmentMethod = shipmentMethod;
-		this.destinationPlace = destination;
-		this.depaturePlace = depature;
-		this.serviceProposalStatus = service_proposal_status;
-		this.trackNumber = track_number;
-	}
-
 	public Proposal() {
 	}
 
@@ -49,47 +35,23 @@ public class Proposal {
 		return proposalId;
 	}
 
-	public void setProposalId(long proposalId) {
-		this.proposalId = proposalId;
-	}
-
 	public ShipmentMethod getShipmentMethod() {
 		return shipmentMethod;
-	}
-
-	public void setShipmentMethod(ShipmentMethod shipmentMethod) {
-		this.shipmentMethod = shipmentMethod;
 	}
 
 	public String getDestinationPlace() {
 		return destinationPlace;
 	}
 
-	public void setDestinationPlace(String destinationPlace) {
-		this.destinationPlace = destinationPlace;
-	}
-
 	public String getDepaturePlace() {
 		return depaturePlace;
 	}
 
-	public void setDepaturePlace(String depaturePlace) {
-		this.depaturePlace = depaturePlace;
-	}
-
-	public ServiceProposalStatus getProposalStatus() {
+	public ServiceProposalStatus getServiceProposalStatus() {
 		return serviceProposalStatus;
-	}
-
-	public void setProposalStatus(ServiceProposalStatus serviceProposalStatus) {
-		this.serviceProposalStatus = serviceProposalStatus;
 	}
 
 	public String getTrackNumber() {
 		return trackNumber;
-	}
-
-	public void setTrackNumber(String trecNumber) {
-		this.trackNumber = trecNumber;
 	}
 }

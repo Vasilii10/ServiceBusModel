@@ -18,15 +18,15 @@ public class ProposalController {
 		this.proposalService = proposalService;
 	}
 
+	// TODO: 27/04/2021 по айди записывать трек-номер (нужно для СУТ)
+
 	/**
 	 * Создание заявки в сервисе
 	 * + запись в БД
-	 *
-	 * работает
 	 */
 	@PostMapping(value = "/proposal/new")
 	public ResponseEntity<?> createNewProposal(@RequestBody Proposal proposal) {
-		boolean result = proposalService.create(proposal);
+		boolean result = proposalService.createNewProposal(proposal);
 
 		return result
 			? new ResponseEntity<>(HttpStatus.CREATED)
@@ -36,11 +36,10 @@ public class ProposalController {
 
 	/**
 	 * Получение всех заявок
-	 *
-	 * работает
+	 * <p>
 	 */
 	@GetMapping(value = "/proposals")
-	public ResponseEntity<List<Proposal>> readAllProposals() {
+	public ResponseEntity<List<Proposal>> getAllProposals() {
 		final List<Proposal> proposals = proposalService.readAll();
 
 		return proposals != null && !proposals.isEmpty()
@@ -50,12 +49,12 @@ public class ProposalController {
 
 	/**
 	 * Получение заявки по id
-	 *
+	 * <p>
 	 * работает
 	 */
 	@GetMapping(value = "/proposals/{id}")
-	public ResponseEntity<Proposal> read(@PathVariable(name = "id") long id) {
-		final Proposal proposal = proposalService.getStatusBy(id);
+	public ResponseEntity<Proposal> getProposalById(@PathVariable(name = "id") long id) {
+		final Proposal proposal = proposalService.getProposalBy(id);
 
 		return proposal != null
 			? new ResponseEntity<>(proposal, HttpStatus.OK)
@@ -65,13 +64,12 @@ public class ProposalController {
 
 	/**
 	 * Получение статуса заявки по id
-	 *
+	 * <p>
 	 * работает
 	 */
 	@GetMapping(value = "/proposal/status/{id}")
-	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "id") int id) {
-		final ServiceProposalStatus proposalStatus = proposalService.getStatusBy(id).getProposalStatus(); // вынести на
-		// другой слой
+	public ResponseEntity<ServiceProposalStatus> getProposalStatusBy(@PathVariable(name = "id") int id) {
+		final ServiceProposalStatus proposalStatus = proposalService.getProposalStatusById(id);
 
 		return proposalStatus != null
 			? new ResponseEntity<>(proposalStatus, HttpStatus.OK)
@@ -79,42 +77,30 @@ public class ProposalController {
 	}
 
 	/**
-	 * Получение статса заявки по трек номеру
+	 * Получение статуса заявки по трек номеру
 	 * <p>
-	 *работает
+	 * работает
 	 */
 	@GetMapping(value = "/proposal/status/track/{track_number}")
-	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "track_number") String trackNumber) {
-		final ServiceProposalStatus proposalStatus = proposalService.getStatusBy(trackNumber); // вынести на
-		// другой слой
+	public ResponseEntity<ServiceProposalStatus> getProposalStatusBy(
+		@PathVariable(name = "track_number") String trackNumber) {
+
+		final ServiceProposalStatus proposalStatus = proposalService.getProposalStatusByTrack(trackNumber);
 
 		return proposalStatus != null
 			? new ResponseEntity<>(proposalStatus, HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-
 	/**
-	 * обновлений всех полей заявки
-	 */
-//	@PutMapping(value = "/proposal/{id}")
-//	public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody Proposal proposal) {
-//		final boolean updated = proposalService.update(proposal, id);
-//
-//		return updated
-//			? new ResponseEntity<>(HttpStatus.OK)
-//			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-//	}
-
-	/**
-	 * Передача  со статусом
+	 * Получение заявок с определенным статусом
 	 * <p>
 	 * рабоатет
 	 */
 	@PostMapping(value = "/proposalsByStatus")
-	public ResponseEntity<List<Proposal>> readNessswposals(@RequestBody ServiceProposalStatus status) {
-		final List<Proposal> newProposals = proposalService.readProposalsByStatusIs(
-			 status);
+	public ResponseEntity<List<Proposal>> getProposalWith(@RequestBody ServiceProposalStatus status) {
+		final List<Proposal> newProposals = proposalService.getProposalsByStatus(
+			status);
 
 		return newProposals != null && !newProposals.isEmpty()
 			? new ResponseEntity<>(newProposals, HttpStatus.OK)
@@ -130,8 +116,8 @@ public class ProposalController {
 	 * рабоатет
 	 */
 	@GetMapping(value = "/proposals/new")
-	public ResponseEntity<List<Proposal>> readNewproposals() {
-		final List<Proposal> newProposals = proposalService.readProposalsByStatusIs(
+	public ResponseEntity<List<Proposal>> getNewProposals() {
+		final List<Proposal> newProposals = proposalService.getProposalsByStatus(
 			ServiceProposalStatus.NEW_CREATED);
 
 		return newProposals != null && !newProposals.isEmpty()
@@ -144,10 +130,10 @@ public class ProposalController {
 	 * <p>
 	 * работает
 	 */
-	@PutMapping(value = "/proposal/updateStatus/{id}")
-	public ResponseEntity<?> update(@PathVariable(name = "id") int id,
-									@RequestBody ServiceProposalStatus newStatus) {
-		final boolean isUpdated = proposalService.updateStatusBy(id, newStatus);
+	@PutMapping(value = "/proposal/status/update/{id}")
+	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "id") long id,
+													@RequestBody ServiceProposalStatus newStatus) {
+		final boolean isUpdated = proposalService.updateProposalStatusBy(id, newStatus);
 
 		return isUpdated
 			? new ResponseEntity<>(HttpStatus.OK)
@@ -157,19 +143,15 @@ public class ProposalController {
 	/**
 	 * обновление статуса по трек номеру
 	 * <p>
-	 *
 	 */
-	@PutMapping(value = "/proposal/updateStatus/{track_number}")
-	public ResponseEntity<?> updateStatusBy(@PathVariable(name = "track_number") String track,
-											@RequestBody ServiceProposalStatus newStatus) {
-		final boolean isUpdated = proposalService.updateStatusBy(track, newStatus);
+	@PutMapping(value = "/proposal/status/updatebytrack/{track_number}")
+	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "track_number") String track,
+													@RequestBody ServiceProposalStatus newStatus) {
+		final boolean isUpdated = proposalService.updateProposalStatusBy(track, newStatus);
 
 		return isUpdated
 			? new ResponseEntity<>(HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
-
-	// как мониторить изменения статуса?
-	// заправщивать трек номер?
 }

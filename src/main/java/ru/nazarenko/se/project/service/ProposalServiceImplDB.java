@@ -7,59 +7,53 @@ import ru.nazarenko.se.project.model.*;
 
 import java.util.List;
 
-import static ru.nazarenko.se.project.entities.ProposalDAO.*;
-
 @Service
 @Primary
 public class ProposalServiceImplDB implements ProposalService {
+
 	@Override
-	public boolean create(Proposal proposal) {
-		return ProposalDAO.create_New(proposal);
+	public boolean createNewProposal(Proposal proposal) {
+		return ProposalDAO.createNewProposal(proposal);
 	}
 
 	@Override
 	public List<Proposal> readAll() {
-		return ProposalDAO.findAllProposals();
+		return ProposalDAO.getAllProposals();
 	}
 
 	@Override
-	public Proposal getStatusBy(long id) {
-		return findById(id);
+	public Proposal getProposalBy(long id) {
+		return ProposalDAO.findProposalById(id);
 	}
 
 	@Override
-	public boolean delete(long id) {
-		return ProposalDAO.deleteProposalBY(id);
+	public boolean deleteProposal(long id) {
+		return ProposalDAO.deleteProposalBy(id);
 	}
 
 	@Override
-	public ServiceProposalStatus getStatusBy(String track) {
-		return ProposalDAO.getStatusBy(track);
+	public ServiceProposalStatus getProposalStatusByTrack(String track) {
+		return ProposalDAO.getProposalStatusBy(track);
 	}
 
 	@Override
-	public List<Proposal> readProposalsByStatusIs(ServiceProposalStatus serviceProposalStatus) {
-		return findProposalsByStatus(serviceProposalStatus);
+	public ServiceProposalStatus getProposalStatusById(long id) {
+		return ProposalDAO.getProposalStatusBy(id);
 	}
 
 	@Override
-	public boolean updateStatusBy(long id, ServiceProposalStatus status) {
-		return updateStatus(id, status);
+	public List<Proposal> getProposalsByStatus(ServiceProposalStatus serviceProposalStatus) {
+		return ProposalDAO.getProposalsByStatus(serviceProposalStatus);
 	}
 
 	@Override
-	public boolean updateStatusBy(String track, ServiceProposalStatus status) {
-		return ProposalDAO.updateStatus(track, status);
+	public boolean updateProposalStatusBy(long id, ServiceProposalStatus status) {
+		return ProposalDAO.updateProposalStatusBy(id, status);
+	}
+
+	@Override
+	public boolean updateProposalStatusBy(String track, ServiceProposalStatus status) {
+		return ProposalDAO.updateProposalStatusBy(track, status);
 	}
 
 }
-/**
- * {
- * "proposalId": 22222,
- * "shipmentMethod": "SHIP",
- * "destinationPlace": "j",
- * "depaturePlace": "из",
- * "trackNumber": "wewew",
- * "proposalStatus": "IN_SEQUECE"
- * }
- */

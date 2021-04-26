@@ -2,10 +2,8 @@ package ru.nazarenko.se.project.util;
 
 
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.Metadata;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.boot.*;
+import org.hibernate.boot.registry.*;
 
 public class HibernateUtil {
 	private static StandardServiceRegistry registry;
@@ -27,7 +25,7 @@ public class HibernateUtil {
 				sessionFactory = metadata.getSessionFactoryBuilder().build();
 
 			} catch (Exception e) {
-				e.printStackTrace();
+
 				if (registry != null) {
 					StandardServiceRegistryBuilder.destroy(registry);
 				}

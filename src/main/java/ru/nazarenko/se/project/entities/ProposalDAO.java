@@ -8,19 +8,17 @@ import java.util.List;
 
 public class ProposalDAO {
 
-	public static final ServiceProposalStatus STATUS_FOR_NEW_PROPOSALS = ServiceProposalStatus.NEW_CREATED;
-
-	public static Proposal findById(long id) {
+	public static Proposal findProposalById(long id) {
 		return HibernateUtil.getSessionFactory().openSession().get(Proposal.class, id);
 	}
 
-	public static ServiceProposalStatus getStatusBy(String track) {
+	public static ServiceProposalStatus getProposalStatusBy(String track) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
 			ServiceProposalStatus status = (ServiceProposalStatus)
 				session.createQuery("select serviceProposalStatus" +
-					" from Proposal where trackNumber = :paramName")
-					.setParameter("paramName", track)
+					" from Proposal where trackNumber = :track")
+					.setParameter("track", track)
 					.uniqueResult();
 
 			return status;
@@ -32,7 +30,27 @@ public class ProposalDAO {
 
 	}
 
-	public static boolean create_New(Proposal proposal) {
+	public static ServiceProposalStatus getProposalStatusBy(long proposalId) {
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+			ServiceProposalStatus status = (ServiceProposalStatus)
+				session.createQuery("select serviceProposalStatus" +
+					" from Proposal where proposalId = :proposalId")
+					.setParameter("proposalId", proposalId)
+					.uniqueResult();
+
+			return status;
+		} catch (Exception e) {
+
+			return ServiceProposalStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!
+		}
+	}
+
+	public static boolean createNewProposal(Proposal proposal) {
+
+
+		// TODO: 27/04/2021 проверки на заполенность полей? 
+		
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
@@ -45,33 +63,31 @@ public class ProposalDAO {
 			if (transaction != null) {
 				transaction.rollback();
 			}
+
 			return false;
 		}
 	}
 
-	public static List<Proposal> findAllProposals() {
+	public static List<Proposal> getAllProposals() {
 		return
 			(List<Proposal>) HibernateUtil.getSessionFactory().
 				openSession()
 				.createQuery("From Proposal")
 				.list();
-
-
 	}
 
-	public static List<Proposal> findProposalsByStatus(ServiceProposalStatus status) {
+	public static List<Proposal> getProposalsByStatus(ServiceProposalStatus status) {
 		return
-			(List<Proposal>) HibernateUtil.getSessionFactory().
-				openSession()
-				.createQuery("From Proposal where serviceProposalStatus = :createdStatus")
-				.setParameter("createdStatus", status)
+			(List<Proposal>) HibernateUtil.getSessionFactory()
+				.openSession()
+				.createQuery("From Proposal where serviceProposalStatus = :status")
+				.setParameter("status", status)
 				.list();
-
-
 	}
 
-	public static boolean updateStatus(String trackNumber, ServiceProposalStatus serviceProposalStatus) {
+	public static boolean updateProposalStatusBy(String trackNumber, ServiceProposalStatus serviceProposalStatus) {
 		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
+
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
@@ -95,15 +111,16 @@ public class ProposalDAO {
 		}
 	}
 
-	public static boolean updateStatus(long id, ServiceProposalStatus serviceProposalStatus) {
+	public static boolean updateProposalStatusBy(long id, ServiceProposalStatus newProposalStatus) {
 		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
+
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
 
 			session.createQuery("update Proposal set serviceProposalStatus = :newStatus " +
 				"where id = :id")
-				.setParameter("newStatus", serviceProposalStatus)
+				.setParameter("newStatus", newProposalStatus)
 				.setParameter("id", id)
 				.executeUpdate();
 
@@ -120,7 +137,7 @@ public class ProposalDAO {
 		}
 	}
 
-	public static boolean deleteProposalBY(long id) {
+	public static boolean deleteProposalBy(long id) {
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
