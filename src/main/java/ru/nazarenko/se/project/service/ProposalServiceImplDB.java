@@ -2,6 +2,7 @@ package ru.nazarenko.se.project.service;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import ru.nazarenko.se.project.entities.ProposalDAO;
 import ru.nazarenko.se.project.model.*;
 
 import java.util.List;
@@ -12,8 +13,8 @@ import static ru.nazarenko.se.project.entities.ProposalDAO.*;
 @Primary
 public class ProposalServiceImplDB implements ProposalService {
 	@Override
-	public void create(Proposal proposal) {
-		createNew(proposal);
+	public boolean create(Proposal proposal) {
+		return ProposalDAO.createNew(proposal);
 	}
 
 	@Override
@@ -22,24 +23,18 @@ public class ProposalServiceImplDB implements ProposalService {
 	}
 
 	@Override
-	public Proposal readStatusBy(long id) {
+	public Proposal getStatusBy(long id) {
 		return findById(id);
 	}
 
 	@Override
-	public boolean update(Proposal proposal, long id) {
-		return false;
-	}
-
-	@Override
 	public boolean delete(long id) {
-		return false;
+		return ProposalDAO.deleteProposalBY(id);
 	}
 
 	@Override
-	public ServiceProposalStatus readStatusBy(String track) {
-
-		return getStatusBy(track);
+	public ServiceProposalStatus getStatusBy(String track) {
+		return ProposalDAO.getStatusBy(track);
 	}
 
 	@Override
@@ -49,8 +44,12 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public boolean updateStatusBy(long id, ServiceProposalStatus status) {
-
 		return updateStatus(id, status);
+	}
+
+	@Override
+	public boolean updateStatusBy(String track, ServiceProposalStatus status) {
+		return ProposalDAO.updateStatus(track, status);
 	}
 
 }

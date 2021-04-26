@@ -8,11 +8,13 @@ import java.util.List;
 
 public class ProposalDAO {
 
+	public static final ServiceProposalStatus STATUS_FOR_NEW_PROPOSALS = ServiceProposalStatus.NEW_CREATED;
+
 	public static Proposal findById(long id) {
 		return HibernateUtil.getSessionFactory().openSession().get(Proposal.class, id);
 	}
 
-	public static ServiceProposalStatus getStatusBy(String track){
+	public static ServiceProposalStatus getStatusBy(String track) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
 			ServiceProposalStatus status = (ServiceProposalStatus)
@@ -30,16 +32,20 @@ public class ProposalDAO {
 
 	}
 
-//	public static ServiceProposalStatus findByTrack(String id) throws NoSuchFieldException {
-//		return HibernateUtil.getSessionFactory().openSession().get(String.valueOf(Proposal.class.getField("service_proposal_status")), id);
-//	}
+	public static boolean createNew(Proposal proposal) {
+		Transaction transaction = null;
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			transaction = session.beginTransaction();
 
-	public static void createNew(Proposal proposal){
-		try {
-			writeInDB(proposal);
-			System.err.println("Успешно");
+			session.save(proposal);
+			transaction.commit();
+
+			return true;
 		} catch (Exception e) {
-			System.err.println("Ошибка!");
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			return false;
 		}
 	}
 
@@ -58,14 +64,38 @@ public class ProposalDAO {
 			(List<Proposal>) HibernateUtil.getSessionFactory().
 				openSession()
 				.createQuery("From Proposal where serviceProposalStatus = :createdStatus")
-				.setParameter("createdStatus", ServiceProposalStatus.NEW_CREATED)
+				.setParameter("createdStatus", STATUS_FOR_NEW_PROPOSALS)
 				.list();
 
 
 	}
 
-	public static boolean updateStatus(long id, ServiceProposalStatus serviceProposalStatus){
-		// TODO: 26/04/2021 перенос на dao слой
+	public static boolean updateStatus(String trackNumber, ServiceProposalStatus serviceProposalStatus) {
+		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
+		Transaction transaction = null;
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			transaction = session.beginTransaction();
+
+			session.createQuery("update Proposal set serviceProposalStatus = :newStatus " +
+				"where trackNumber = :trackNumber")
+				.setParameter("newStatus", serviceProposalStatus)
+				.setParameter("trackNumber", trackNumber)
+				.executeUpdate();
+
+			transaction.commit();
+
+			return true;
+		} catch (Exception e) {
+
+			if (transaction != null) {
+				transaction.rollback();
+			}
+
+			return false;
+		}
+	}
+
+	public static boolean updateStatus(long id, ServiceProposalStatus serviceProposalStatus) {
 		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -90,21 +120,25 @@ public class ProposalDAO {
 		}
 	}
 
-	// TODO: 26/04/2021 перенос на dao слой
-	private static void writeInDB(Object object) throws Exception {
+	public static boolean deleteProposalBY(long id) {
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
 
-			session.save(object);
+			session.createQuery("delete Proposal" +
+				"where id = :id")
+				.setParameter("id", id).executeUpdate();
+
 			transaction.commit();
+
+			return true;
 		} catch (Exception e) {
+
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			throw new Exception();
-		}
 
+			return false;
+		}
 	}
-	// TODO: 25/04/2021  
 }

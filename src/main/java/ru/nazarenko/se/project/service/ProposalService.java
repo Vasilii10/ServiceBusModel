@@ -11,8 +11,9 @@ public interface ProposalService {
 	 * Создает нового клиента
 	 *
 	 * @param proposal - клиент для создания
+	 * @return
 	 */
-	void create(Proposal proposal);
+	boolean create(Proposal proposal);
 
 	/**
 	 * Возвращает список всех имеющихся клиентов
@@ -27,7 +28,7 @@ public interface ProposalService {
 	 * @param id - ID клиента
 	 * @return - объект клиента с заданным ID
 	 */
-	Proposal readStatusBy(long id);
+	Proposal getStatusBy(long id);
 
 	/**
 	 * Обновляет клиента с заданным ID,
@@ -37,7 +38,7 @@ public interface ProposalService {
 	 * @param id       - id клиента которого нужно обновить
 	 * @return - true если данные были обновлены, иначе false
 	 */
-	boolean update(Proposal proposal, long id);
+	//boolean update(Proposal proposal, long id);
 
 	/**
 	 * Удаляет клиента с заданным ID
@@ -47,10 +48,14 @@ public interface ProposalService {
 	 */
 	boolean delete(long id);
 
-	ServiceProposalStatus readStatusBy(String treck);
+	ServiceProposalStatus getStatusBy(String treck);
 
 	List<Proposal> readNewProposals();
 
+	// по айдишке обновляем
 	boolean updateStatusBy(long id, ServiceProposalStatus status);
+
+	// по трек номеру
+	boolean updateStatusBy(String track, ServiceProposalStatus status);
 
 }
