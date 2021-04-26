@@ -21,9 +21,11 @@ public class ProposalController {
 	/**
 	 * Создание заявки в сервисе
 	 * + запись в БД
+	 *
+	 * работает
 	 */
 	@PostMapping(value = "/proposal/new")
-	public ResponseEntity<?> create(@RequestBody Proposal proposal) {
+	public ResponseEntity<?> createNewProposal(@RequestBody Proposal proposal) {
 		boolean result = proposalService.create(proposal);
 
 		return result
@@ -34,9 +36,11 @@ public class ProposalController {
 
 	/**
 	 * Получение всех заявок
+	 *
+	 * работает
 	 */
 	@GetMapping(value = "/proposals")
-	public ResponseEntity<List<Proposal>> read() {
+	public ResponseEntity<List<Proposal>> readAllProposals() {
 		final List<Proposal> proposals = proposalService.readAll();
 
 		return proposals != null && !proposals.isEmpty()
@@ -46,6 +50,8 @@ public class ProposalController {
 
 	/**
 	 * Получение заявки по id
+	 *
+	 * работает
 	 */
 	@GetMapping(value = "/proposals/{id}")
 	public ResponseEntity<Proposal> read(@PathVariable(name = "id") long id) {
@@ -58,7 +64,9 @@ public class ProposalController {
 
 
 	/**
-	 * Получение статeса заявки по id
+	 * Получение статуса заявки по id
+	 *
+	 * работает
 	 */
 	@GetMapping(value = "/proposal/status/{id}")
 	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "id") int id) {
@@ -73,7 +81,7 @@ public class ProposalController {
 	/**
 	 * Получение статса заявки по трек номеру
 	 * <p>
-	 * сделали
+	 *работает
 	 */
 	@GetMapping(value = "/proposal/status/track/{track_number}")
 	public ResponseEntity<ServiceProposalStatus> getStatusBy(@PathVariable(name = "track_number") String trackNumber) {
@@ -104,10 +112,10 @@ public class ProposalController {
 	/**
 	 * Передача новых заявок для СУТ
 	 * <p>
-	 * сделали
+	 * рабоатет
 	 */
 	@GetMapping(value = "/proposals/new")
-	public ResponseEntity<List<Proposal>> readNew() {
+	public ResponseEntity<List<Proposal>> readNewproposals() {
 		final List<Proposal> newProposals = proposalService.readNewProposals();
 
 		return newProposals != null && !newProposals.isEmpty()
@@ -118,9 +126,9 @@ public class ProposalController {
 	/**
 	 * обновление статуса по айдишке
 	 * <p>
-	 * сделали
+	 * работает
 	 */
-	@PutMapping(value = "/proposal/{id}/update")
+	@PutMapping(value = "/proposal/updateStatus/{id}")
 	public ResponseEntity<?> update(@PathVariable(name = "id") int id,
 									@RequestBody ServiceProposalStatus newStatus) {
 		final boolean isUpdated = proposalService.updateStatusBy(id, newStatus);
@@ -135,7 +143,7 @@ public class ProposalController {
 	 * <p>
 	 *
 	 */
-	@PutMapping(value = "/proposal/update/{track_number}")
+	@PutMapping(value = "/proposal/updateStatus/{track_number}")
 	public ResponseEntity<?> updateStatusBy(@PathVariable(name = "track_number") String track,
 											@RequestBody ServiceProposalStatus newStatus) {
 		final boolean isUpdated = proposalService.updateStatusBy(track, newStatus);

@@ -32,7 +32,7 @@ public class ProposalDAO {
 
 	}
 
-	public static boolean createNew(Proposal proposal) {
+	public static boolean create_New(Proposal proposal) {
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
@@ -49,7 +49,7 @@ public class ProposalDAO {
 		}
 	}
 
-	public static List<Proposal> findAll() {
+	public static List<Proposal> findAllProposals() {
 		return
 			(List<Proposal>) HibernateUtil.getSessionFactory().
 				openSession()

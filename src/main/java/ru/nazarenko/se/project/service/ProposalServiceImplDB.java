@@ -14,13 +14,16 @@ import static ru.nazarenko.se.project.entities.ProposalDAO.*;
 public class ProposalServiceImplDB implements ProposalService {
 	@Override
 	public boolean create(Proposal proposal) {
-		return ProposalDAO.createNew(proposal);
+		return ProposalDAO.create_New(proposal);
 	}
 
 	@Override
 	public List<Proposal> readAll() {
-		return findAll();
+		return ProposalDAO.findAllProposals();
 	}
+
+
+	// TODO: 26/04/2021 read all цшер status
 
 	@Override
 	public Proposal getStatusBy(long id) {
