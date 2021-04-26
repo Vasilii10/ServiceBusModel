@@ -50,7 +50,15 @@ public interface ProposalService {
 
 	ServiceProposalStatus getStatusBy(String treck);
 
-	List<Proposal> readNewProposals();
+
+
+	/**
+	 * ищем задания по статусу
+	 * @param serviceProposalStatus
+	 * @return
+	 */
+	List<Proposal> readProposalsByStatusIs(ServiceProposalStatus serviceProposalStatus);
+
 
 	// по айдишке обновляем
 	boolean updateStatusBy(long id, ServiceProposalStatus status);

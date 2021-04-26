@@ -59,12 +59,12 @@ public class ProposalDAO {
 
 	}
 
-	public static List<Proposal> findNew() {
+	public static List<Proposal> findProposalsByStatus(ServiceProposalStatus status) {
 		return
 			(List<Proposal>) HibernateUtil.getSessionFactory().
 				openSession()
 				.createQuery("From Proposal where serviceProposalStatus = :createdStatus")
-				.setParameter("createdStatus", STATUS_FOR_NEW_PROPOSALS)
+				.setParameter("createdStatus", status)
 				.list();
 
 

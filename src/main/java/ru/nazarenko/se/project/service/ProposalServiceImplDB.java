@@ -22,9 +22,6 @@ public class ProposalServiceImplDB implements ProposalService {
 		return ProposalDAO.findAllProposals();
 	}
 
-
-	// TODO: 26/04/2021 read all цшер status
-
 	@Override
 	public Proposal getStatusBy(long id) {
 		return findById(id);
@@ -41,8 +38,8 @@ public class ProposalServiceImplDB implements ProposalService {
 	}
 
 	@Override
-	public List<Proposal> readNewProposals() {
-		return findNew();
+	public List<Proposal> readProposalsByStatusIs(ServiceProposalStatus serviceProposalStatus) {
+		return findProposalsByStatus(serviceProposalStatus);
 	}
 
 	@Override

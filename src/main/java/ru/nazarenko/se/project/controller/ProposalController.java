@@ -106,6 +106,21 @@ public class ProposalController {
 //			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 //	}
 
+	/**
+	 * Передача  со статусом
+	 * <p>
+	 * рабоатет
+	 */
+	@PostMapping(value = "/proposalsByStatus")
+	public ResponseEntity<List<Proposal>> readNessswposals(@RequestBody ServiceProposalStatus status) {
+		final List<Proposal> newProposals = proposalService.readProposalsByStatusIs(
+			 status);
+
+		return newProposals != null && !newProposals.isEmpty()
+			? new ResponseEntity<>(newProposals, HttpStatus.OK)
+			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 
 	// ------взаимодействие с СУТ --------
 
@@ -116,7 +131,8 @@ public class ProposalController {
 	 */
 	@GetMapping(value = "/proposals/new")
 	public ResponseEntity<List<Proposal>> readNewproposals() {
-		final List<Proposal> newProposals = proposalService.readNewProposals();
+		final List<Proposal> newProposals = proposalService.readProposalsByStatusIs(
+			ServiceProposalStatus.NEW_CREATED);
 
 		return newProposals != null && !newProposals.isEmpty()
 			? new ResponseEntity<>(newProposals, HttpStatus.OK)
