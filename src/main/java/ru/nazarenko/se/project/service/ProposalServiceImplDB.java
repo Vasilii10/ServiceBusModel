@@ -1,10 +1,8 @@
 package ru.nazarenko.se.project.service;
 
-import org.hibernate.*;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.nazarenko.se.project.model.*;
-import ru.nazarenko.se.project.util.HibernateUtil;
 
 import java.util.List;
 
@@ -15,24 +13,7 @@ import static ru.nazarenko.se.project.entities.ProposalDAO.*;
 public class ProposalServiceImplDB implements ProposalService {
 	@Override
 	public void create(Proposal proposal) {
-
-		// FIXME: 25/04/2021 тестовый случай!
-//		Proposal student = new Proposal(
-//			1,
-//			ShipmentMethod.SHIP,
-//			"все дороги ведут в москву",
-//			"из краснодара",
-//			ServiceProposalStatus.IN_SEQUECE,
-//			"h"
-//		);
-
-		try {
-
-			writeInDB(proposal);
-			System.err.println("Успешно");
-		} catch (Exception e) {
-			System.err.println("Ошибка!");
-		}
+		createNew(proposal);
 	}
 
 	@Override
@@ -57,21 +38,8 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public ServiceProposalStatus readStatusBy(String track) {
-		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-			ServiceProposalStatus s = (ServiceProposalStatus)
-				session.createQuery("select serviceProposalStatus" +
-				" from Proposal where trackNumber = :paramName")
-				.setParameter("paramName", track)
-				.uniqueResult();
-
-			return s;
-		} catch (Exception e) {
-			System.err.println("ОЩибочка");
-
-			return ServiceProposalStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!
-		}
-
+		return getStatusBy(track);
 	}
 
 	@Override
@@ -81,45 +49,10 @@ public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
 	public boolean updateStatusBy(long id, ServiceProposalStatus status) {
-		// TODO: 25/04/2021 предусмотреть исключение если статуса нет  
-		Transaction transaction = null;
-		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-			transaction = session.beginTransaction();
 
-			session.createQuery("update Proposal set serviceProposalStatus = :newStatus " +
-				"where id = :id")
-				.setParameter("newStatus", status)
-				.setParameter("id", id)
-				.executeUpdate();
-
-			transaction.commit();
-
-			return true;
-		} catch (Exception e) {
-
-			if (transaction != null) {
-				transaction.rollback();
-			}
-
-			return false;
-		}
+		return updateStatus(id, status);
 	}
 
-	public static void writeInDB(Object object) throws Exception {
-		Transaction transaction = null;
-		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-			transaction = session.beginTransaction();
-
-			session.save(object);
-			transaction.commit();
-		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			throw new Exception();
-		}
-
-	}
 }
 /**
  * {

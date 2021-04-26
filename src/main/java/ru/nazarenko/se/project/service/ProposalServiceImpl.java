@@ -6,8 +6,11 @@ import ru.nazarenko.se.project.model.*;
 
 import java.util.*;
 
-@Service
 
+/**
+ * резализация без БД
+ */
+@Service
 public class ProposalServiceImpl implements ProposalService {
 
 	private static final Map<Long, Proposal> PROPOSAL_REPOSITORY_MAP = new HashMap<>();
