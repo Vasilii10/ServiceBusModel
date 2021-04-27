@@ -18,20 +18,34 @@ public class ProposalController {
 		this.proposalService = proposalService;
 	}
 
-	// TODO: 27/04/2021 по айди записывать трек-номер (нужно для СУТ)
+
+	/**
+	 * Запись трек номера для заявки по айди
+	 */
+	@PutMapping(value = "/proposal/track/{id}")
+	public ResponseEntity<?> writeTrackForProposalById(@PathVariable(name = "id") long id,
+													   @RequestBody String track_number) {
+
+		boolean isUpdated =	proposalService.writeTrackById(id, track_number);
+		return isUpdated
+			? new ResponseEntity<>(HttpStatus.OK)
+			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+	}
+
+
 
 	/**
 	 * Создание заявки в сервисе
-	 * + запись в БД
+	 * при успешной записи в ответ возвращается id
 	 */
 	@PostMapping(value = "/proposal/new")
 	public ResponseEntity<?> createNewProposal(@RequestBody Proposal proposal) {
-		boolean result = proposalService.createNewProposal(proposal);
-
-		return result
-			? new ResponseEntity<>(HttpStatus.CREATED)
-			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
+		try {
+			long id = proposalService.createNewProposal(proposal);
+			return new ResponseEntity<>(id, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
@@ -49,10 +63,8 @@ public class ProposalController {
 
 	/**
 	 * Получение заявки по id
-	 * <p>
-	 * работает
 	 */
-	@GetMapping(value = "/proposals/{id}")
+	@GetMapping(value = "/proposal/{id}")
 	public ResponseEntity<Proposal> getProposalById(@PathVariable(name = "id") long id) {
 		final Proposal proposal = proposalService.getProposalBy(id);
 
@@ -64,8 +76,6 @@ public class ProposalController {
 
 	/**
 	 * Получение статуса заявки по id
-	 * <p>
-	 * работает
 	 */
 	@GetMapping(value = "/proposal/status/{id}")
 	public ResponseEntity<ServiceProposalStatus> getProposalStatusBy(@PathVariable(name = "id") int id) {
@@ -78,8 +88,6 @@ public class ProposalController {
 
 	/**
 	 * Получение статуса заявки по трек номеру
-	 * <p>
-	 * работает
 	 */
 	@GetMapping(value = "/proposal/status/track/{track_number}")
 	public ResponseEntity<ServiceProposalStatus> getProposalStatusBy(
@@ -94,8 +102,6 @@ public class ProposalController {
 
 	/**
 	 * Получение заявок с определенным статусом
-	 * <p>
-	 * рабоатет
 	 */
 	@PostMapping(value = "/proposalsByStatus")
 	public ResponseEntity<List<Proposal>> getProposalWith(@RequestBody ServiceProposalStatus status) {
@@ -126,7 +132,7 @@ public class ProposalController {
 	}
 
 	/**
-	 * обновление статуса по айдишке
+	 * обновление/запись статуса по proposalId
 	 * <p>
 	 * работает
 	 */
@@ -141,7 +147,7 @@ public class ProposalController {
 	}
 
 	/**
-	 * обновление статуса по трек номеру
+	 * обновление/запись статуса по трек номеру
 	 * <p>
 	 */
 	@PutMapping(value = "/proposal/status/updatebytrack/{track_number}")

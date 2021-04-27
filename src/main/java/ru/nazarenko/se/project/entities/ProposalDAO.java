@@ -46,7 +46,7 @@ public class ProposalDAO {
 		}
 	}
 
-	public static boolean createNewProposal(Proposal proposal) {
+	public static long createNewProposal(Proposal proposal) {
 
 
 		// TODO: 27/04/2021 проверки на заполенность полей? 
@@ -58,13 +58,14 @@ public class ProposalDAO {
 			session.save(proposal);
 			transaction.commit();
 
-			return true;
+			return proposal.getProposalId();
 		} catch (Exception e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
 
-			return false;
+			// а лучше иксепшн
+			return 0;
 		}
 	}
 
@@ -145,6 +146,29 @@ public class ProposalDAO {
 			session.createQuery("delete Proposal" +
 				"where id = :id")
 				.setParameter("id", id).executeUpdate();
+
+			transaction.commit();
+
+			return true;
+		} catch (Exception e) {
+
+			if (transaction != null) {
+				transaction.rollback();
+			}
+
+			return false;
+		}
+	}
+
+	public static boolean writeTreckNumberByProposalId(long id, String track_number) {
+		Transaction transaction = null;
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			transaction = session.beginTransaction();
+
+			session.createQuery("update Proposal set trackNumber = :track_number where id = :id")
+				.setParameter("track_number", track_number)
+				.setParameter("id", id)
+				.executeUpdate();
 
 			transaction.commit();
 

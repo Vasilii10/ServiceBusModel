@@ -12,7 +12,7 @@ import java.util.List;
 public class ProposalServiceImplDB implements ProposalService {
 
 	@Override
-	public boolean createNewProposal(Proposal proposal) {
+	public long createNewProposal(Proposal proposal) {
 		return ProposalDAO.createNewProposal(proposal);
 	}
 
@@ -54,6 +54,11 @@ public class ProposalServiceImplDB implements ProposalService {
 	@Override
 	public boolean updateProposalStatusBy(String track, ServiceProposalStatus status) {
 		return ProposalDAO.updateProposalStatusBy(track, status);
+	}
+
+	@Override
+	public boolean writeTrackById(long id, String track_number) {
+		return ProposalDAO.writeTreckNumberByProposalId(id, track_number);
 	}
 
 }

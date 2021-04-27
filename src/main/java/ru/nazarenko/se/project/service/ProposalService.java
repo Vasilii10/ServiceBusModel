@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProposalService {
 
-	boolean createNewProposal(Proposal proposal);
+	long createNewProposal(Proposal proposal);
 
 	List<Proposal> readAll();
 
@@ -25,4 +25,5 @@ public interface ProposalService {
 
 	boolean updateProposalStatusBy(String track, ServiceProposalStatus status);
 
+	boolean writeTrackById(long id, String track_number);
 }
