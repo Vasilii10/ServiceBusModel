@@ -161,6 +161,9 @@ public class ProposalDAO {
 	}
 
 	public static boolean writeTreckNumberByProposalId(long id, String track_number) {
+
+		// FIXME: 28/04/2021 проверить пусто ли, если нет - ошибка
+		
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
