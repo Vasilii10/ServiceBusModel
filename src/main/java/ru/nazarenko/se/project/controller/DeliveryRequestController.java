@@ -18,23 +18,11 @@ public class DeliveryRequestController {
 		this.deliveryRequestService = deliveryRequestService;
 	}
 
-
-	/**
-	 * Запись трек номера для заявки по айди
-	 */
-	@PutMapping(value = "/proposal/track/{id}")
-	public ResponseEntity<?> writeTrackForProposalById(@PathVariable(name = "id") long id,
-													   @RequestBody String track_number) {
-
-		boolean isUpdated = deliveryRequestService.writeTrackById(id, track_number);
-		return isUpdated
-			? new ResponseEntity<>(HttpStatus.OK)
-			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-	}
+	// TODO: 29/04/2021 rename paths
 
 	/**
 	 * Создание заявки в сервисе
-	 * при успешной записи в ответ возвращается id
+	 * @return id
 	 */
 	@PostMapping(value = "/proposal/new")
 	public ResponseEntity<?> createNewProposal(@RequestBody DeliveryRequest deliveryRequest) {
@@ -48,7 +36,6 @@ public class DeliveryRequestController {
 
 	/**
 	 * Получение всех заявок
-	 * <p>
 	 */
 	@GetMapping(value = "/proposals")
 	public ResponseEntity<List<DeliveryRequest>> getAllProposals() {
@@ -70,7 +57,6 @@ public class DeliveryRequestController {
 			? new ResponseEntity<>(deliveryRequest, HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-
 
 	/**
 	 * Получение статуса заявки по id
@@ -112,9 +98,8 @@ public class DeliveryRequestController {
 	}
 
 	/**
-	 * Передача новых заявок для СУТ
-	 * <p>
-	 * рабоатет
+	 * Передача новых заявок
+	 * для СУТ
 	 */
 	@GetMapping(value = "/proposals/new")
 	public ResponseEntity<List<DeliveryRequest>> getNewProposals() {
@@ -127,9 +112,22 @@ public class DeliveryRequestController {
 	}
 
 	/**
+	 * Запись трек номера для заявки по id
+	 * для СУТ
+	 */
+	@PutMapping(value = "/proposal/track/{id}")
+	public ResponseEntity<?> writeTrackForProposalById(@PathVariable(name = "id") long id,
+													   @RequestBody String track_number) {
+
+		boolean isUpdated = deliveryRequestService.writeTrackById(id, track_number);
+		return isUpdated
+			? new ResponseEntity<>(HttpStatus.OK)
+			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+	}
+
+	/**
 	 * обновление/запись статуса по proposalId
-	 * <p>
-	 * работает
+	 * для СУТ
 	 */
 	@PutMapping(value = "/proposal/status/update/{id}")
 	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "id") long id,
@@ -143,7 +141,7 @@ public class DeliveryRequestController {
 
 	/**
 	 * обновление/запись статуса по трек номеру
-	 * <p>
+	 * для СУТ
 	 */
 	@PutMapping(value = "/proposal/status/updatebytrack/{track_number}")
 	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "track_number") String track,
