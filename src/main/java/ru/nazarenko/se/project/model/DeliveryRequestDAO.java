@@ -7,13 +7,13 @@ import java.util.List;
 
 public class DeliveryRequestDAO {
 
-	public static DeliveryRequest findProposalById(long deliveryRequestId) {
+	public static DeliveryRequest findRequestById(long deliveryRequestId) {
 		return HibernateUtil.getSessionFactory()
 			.openSession()
 			.get(DeliveryRequest.class, deliveryRequestId);
 	}
 
-	public static RequestServiceStatus getProposalStatusBy(String trackNumber) {
+	public static RequestServiceStatus getRequestStatusBy(String trackNumber) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
 			RequestServiceStatus serviceStatus = (RequestServiceStatus)
@@ -31,7 +31,7 @@ public class DeliveryRequestDAO {
 
 	}
 
-	public static RequestServiceStatus getProposalStatusBy(long id) {
+	public static RequestServiceStatus getRequestStatusBy(long id) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
 			RequestServiceStatus serviceStatus = (RequestServiceStatus)
@@ -48,7 +48,7 @@ public class DeliveryRequestDAO {
 		}
 	}
 
-	public static long createNewProposal(DeliveryRequest deliveryRequest) {
+	public static long createNewRequest(DeliveryRequest deliveryRequest) {
 
 
 		// TODO: 27/04/2021 проверки на заполенность полей? 
@@ -71,7 +71,7 @@ public class DeliveryRequestDAO {
 		}
 	}
 
-	public static List<DeliveryRequest> getAllProposals() {
+	public static List<DeliveryRequest> getAllRequests() {
 		return
 			(List<DeliveryRequest>) HibernateUtil.getSessionFactory()
 				.openSession()
@@ -79,7 +79,7 @@ public class DeliveryRequestDAO {
 				.list();
 	}
 
-	public static List<DeliveryRequest> getProposalsByStatus(RequestServiceStatus serviceStatus) {
+	public static List<DeliveryRequest> getByStatus(RequestServiceStatus serviceStatus) {
 		return
 			(List<DeliveryRequest>) HibernateUtil.getSessionFactory()
 				.openSession()
@@ -88,7 +88,7 @@ public class DeliveryRequestDAO {
 				.list();
 	}
 
-	public static boolean updateProposalStatusBy(String trackNumber, RequestServiceStatus requestServiceStatus) {
+	public static boolean updateStatusBy(String trackNumber, RequestServiceStatus requestServiceStatus) {
 		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
 
 		Transaction transaction = null;
@@ -114,7 +114,7 @@ public class DeliveryRequestDAO {
 		}
 	}
 
-	public static boolean updateProposalStatusBy(long id, RequestServiceStatus newProposalStatus) {
+	public static boolean updateStatusBy(long id, RequestServiceStatus newProposalStatus) {
 		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
 
 		Transaction transaction = null;

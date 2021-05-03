@@ -12,17 +12,17 @@ public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 
 	@Override
 	public long createNewRequest(DeliveryRequest deliveryRequest) {
-		return DeliveryRequestDAO.createNewProposal(deliveryRequest);
+		return DeliveryRequestDAO.createNewRequest(deliveryRequest);
 	}
 
 	@Override
 	public List<DeliveryRequest> readAllRequests() {
-		return DeliveryRequestDAO.getAllProposals();
+		return DeliveryRequestDAO.getAllRequests();
 	}
 
 	@Override
 	public DeliveryRequest getRequestBy(long id) {
-		return DeliveryRequestDAO.findProposalById(id);
+		return DeliveryRequestDAO.findRequestById(id);
 	}
 
 	@Override
@@ -32,27 +32,27 @@ public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 
 	@Override
 	public RequestServiceStatus getRequestStatusByTrack(String trackNumber) {
-		return DeliveryRequestDAO.getProposalStatusBy(trackNumber);
+		return DeliveryRequestDAO.getRequestStatusBy(trackNumber);
 	}
 
 	@Override
 	public RequestServiceStatus getRequestStatusById(long id) {
-		return DeliveryRequestDAO.getProposalStatusBy(id);
+		return DeliveryRequestDAO.getRequestStatusBy(id);
 	}
 
 	@Override
 	public List<DeliveryRequest> getRequestsByStatus(RequestServiceStatus serviceStatus) {
-		return DeliveryRequestDAO.getProposalsByStatus(serviceStatus);
+		return DeliveryRequestDAO.getByStatus(serviceStatus);
 	}
 
 	@Override
 	public boolean updateRequestsStatusBy(long id, RequestServiceStatus serviceStatus) {
-		return DeliveryRequestDAO.updateProposalStatusBy(id, serviceStatus);
+		return DeliveryRequestDAO.updateStatusBy(id, serviceStatus);
 	}
 
 	@Override
 	public boolean updateRequestsStatusBy(String trackNumber, RequestServiceStatus serviceStatus) {
-		return DeliveryRequestDAO.updateProposalStatusBy(trackNumber, serviceStatus);
+		return DeliveryRequestDAO.updateStatusBy(trackNumber, serviceStatus);
 	}
 
 	@Override
