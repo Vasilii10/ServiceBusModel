@@ -20,14 +20,16 @@ public class DeliveryRequestController {
 
 	/**
 	 * Создание заявки в сервисе
+	 *
 	 * @return id
 	 */
 	@PostMapping(value = "/request/new")
 	public ResponseEntity<?> createNewProposal(@RequestBody DeliveryRequest deliveryRequest) {
 		try {
-			long id = deliveryRequestService.createNewRequest(deliveryRequest);
-			return new ResponseEntity<>(id, HttpStatus.CREATED);
-		} catch (Exception e) {
+			long createdId = deliveryRequestService.createNewRequest(deliveryRequest);
+
+			return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+		} catch (RequestNotCreatedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -99,7 +101,7 @@ public class DeliveryRequestController {
 	 * Передача новых заявок
 	 * для СУТ
 	 */
-	@GetMapping(value = "/requestls/new")
+	@GetMapping(value = "/requests/new")
 	public ResponseEntity<List<DeliveryRequest>> getNewProposals() {
 		final List<DeliveryRequest> newDeliveryRequests = deliveryRequestService.getRequestsByStatus(
 			RequestServiceStatus.NEW_CREATED);
@@ -116,11 +118,13 @@ public class DeliveryRequestController {
 	@PutMapping(value = "/request/track/{id}")
 	public ResponseEntity<?> writeTrackForProposalById(@PathVariable(name = "id") long id,
 													   @RequestBody String track_number) {
+		try {
+			deliveryRequestService.writeTrackById(id, track_number);
 
-		boolean isUpdated = deliveryRequestService.writeTrackById(id, track_number);
-		return isUpdated
-			? new ResponseEntity<>(HttpStatus.OK)
-			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (TrackNumberIsExsistedException trackNumberIsExsistedException) {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
 	}
 
 	/**
@@ -148,7 +152,17 @@ public class DeliveryRequestController {
 
 		return isUpdated
 			? new ResponseEntity<>(HttpStatus.OK)
-			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@DeleteMapping(value = "/request/delete/{id}")
+	public ResponseEntity<?> deleteBy(@PathVariable long id) {
+
+		final boolean isDeleted = deliveryRequestService.deleteRequest(id);
+
+		return isDeleted
+			? new ResponseEntity<>(HttpStatus.OK)
+			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

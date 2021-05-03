@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DeliveryRequestService {
 
-	long createNewRequest(DeliveryRequest deliveryRequest);
+	long createNewRequest(DeliveryRequest deliveryRequest) throws RequestNotCreatedException;
 
 	List<DeliveryRequest> readAllRequests();
 
@@ -23,7 +23,7 @@ public interface DeliveryRequestService {
 
 	boolean updateRequestsStatusBy(String trackNumber, RequestServiceStatus serviceStatus);
 
-	boolean writeTrackById(long id, String trackNumber);
+	void writeTrackById(long id, String trackNumber) throws TrackNumberIsExsistedException;
 
 	boolean deleteRequest(long id);
 }

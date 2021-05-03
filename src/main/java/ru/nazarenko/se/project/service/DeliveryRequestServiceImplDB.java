@@ -11,7 +11,7 @@ import java.util.List;
 public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 
 	@Override
-	public long createNewRequest(DeliveryRequest deliveryRequest) {
+	public long createNewRequest(DeliveryRequest deliveryRequest) throws RequestNotCreatedException {
 		return DeliveryRequestDAO.createNewRequest(deliveryRequest);
 	}
 
@@ -52,12 +52,16 @@ public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 
 	@Override
 	public boolean updateRequestsStatusBy(String trackNumber, RequestServiceStatus serviceStatus) {
-		return DeliveryRequestDAO.updateStatusBy(trackNumber, serviceStatus);
+		try {
+			return DeliveryRequestDAO.updateStatusBy(trackNumber, serviceStatus);
+		} catch (TrackNumberNotFoundException e) {
+			return false;
+		}
 	}
 
 	@Override
-	public boolean writeTrackById(long id, String trackNumber) {
-		return DeliveryRequestDAO.writeTrackNumberByRequestId(id, trackNumber);
+	public void writeTrackById(long id, String trackNumber) throws TrackNumberIsExsistedException {
+		DeliveryRequestDAO.writeTrackNumberByRequestId(id, trackNumber);
 	}
 
 }
