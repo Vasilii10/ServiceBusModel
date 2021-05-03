@@ -13,17 +13,17 @@ public interface DeliveryRequestService {
 
 	DeliveryRequest getRequestBy(long id);
 
-	boolean deleteRequest(long id);
-
-	RequestServiceStatus getRequestStatusByTrack(String track);
+	RequestServiceStatus getRequestStatusByTrack(String trackNumber);
 
 	RequestServiceStatus getRequestStatusById(long id);
 
 	List<DeliveryRequest> getRequestsByStatus(RequestServiceStatus requestServiceStatus);
 
-	boolean updateRequestsStatusBy(long proposalId, RequestServiceStatus status);
+	boolean updateRequestsStatusBy(long id, RequestServiceStatus serviceStatus);
 
-	boolean updateRequestsStatusBy(String track, RequestServiceStatus status);
+	boolean updateRequestsStatusBy(String trackNumber, RequestServiceStatus serviceStatus);
 
-	boolean writeTrackById(long id, String track_number);
+	boolean writeTrackById(long id, String trackNumber);
+
+	boolean deleteRequest(long id);
 }

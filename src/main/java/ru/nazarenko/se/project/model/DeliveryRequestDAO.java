@@ -1,7 +1,6 @@
-package ru.nazarenko.se.project.entities;
+package ru.nazarenko.se.project.model;
 
 import org.hibernate.*;
-import ru.nazarenko.se.project.model.*;
 import ru.nazarenko.se.project.util.HibernateUtil;
 
 import java.util.List;
@@ -9,36 +8,40 @@ import java.util.List;
 public class DeliveryRequestDAO {
 
 	public static DeliveryRequest findProposalById(long deliveryRequestId) {
-		return HibernateUtil.getSessionFactory().openSession().get(DeliveryRequest.class, deliveryRequestId);
+		return HibernateUtil.getSessionFactory()
+			.openSession()
+			.get(DeliveryRequest.class, deliveryRequestId);
 	}
 
-	public static RequestServiceStatus getProposalStatusBy(String deliveryTrackNumber) {
+	public static RequestServiceStatus getProposalStatusBy(String trackNumber) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-			RequestServiceStatus status = (RequestServiceStatus)
-				session.createQuery("select requestServiceStatus" +
-					" from DeliveryRequest where deliveryTrackNumber = :deliveryTrackNumber")
-					.setParameter("deliveryTrackNumber", deliveryTrackNumber)
+			RequestServiceStatus serviceStatus = (RequestServiceStatus)
+				session
+					.createQuery("select requestServiceStatus" +
+						" from DeliveryRequest where deliveryTrackNumber = :deliveryTrackNumber")
+					.setParameter("deliveryTrackNumber", trackNumber)
 					.uniqueResult();
 
-			return status;
+			return serviceStatus;
 		} catch (Exception e) {
 
-			return RequestServiceStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!
+			return RequestServiceStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!zx
 		}
 
 	}
 
-	public static RequestServiceStatus getProposalStatusBy(long requestId) {
+	public static RequestServiceStatus getProposalStatusBy(long id) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-			RequestServiceStatus status = (RequestServiceStatus)
-				session.createQuery("select requestServiceStatus" +
-					" from DeliveryRequest where requestServiceStatus = :proposalId")
-					.setParameter("proposalId", requestId)
+			RequestServiceStatus serviceStatus = (RequestServiceStatus)
+				session
+					.createQuery("select requestServiceStatus" +
+						" from DeliveryRequest where deliveryRequestId = :proposalId")
+					.setParameter("proposalId", id)
 					.uniqueResult();
 
-			return status;
+			return serviceStatus;
 		} catch (Exception e) {
 
 			return RequestServiceStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!
@@ -76,12 +79,12 @@ public class DeliveryRequestDAO {
 				.list();
 	}
 
-	public static List<DeliveryRequest> getProposalsByStatus(RequestServiceStatus requestServiceStatus) {
+	public static List<DeliveryRequest> getProposalsByStatus(RequestServiceStatus serviceStatus) {
 		return
 			(List<DeliveryRequest>) HibernateUtil.getSessionFactory()
 				.openSession()
 				.createQuery("From DeliveryRequest where requestServiceStatus = :status")
-				.setParameter("status", requestServiceStatus)
+				.setParameter("status", serviceStatus)
 				.list();
 	}
 
@@ -160,7 +163,7 @@ public class DeliveryRequestDAO {
 		}
 	}
 
-	public static boolean writeTrackNumberByRequestId(long id, String track_number) {
+	public static boolean writeTrackNumberByRequestId(long id, String trackNumber) {
 
 		// FIXME: 28/04/2021 проверить пусто ли, если нет - ошибка
 
@@ -170,7 +173,7 @@ public class DeliveryRequestDAO {
 
 			session.createQuery("update DeliveryRequest set deliveryTrackNumber" +
 				" = :track_number where deliveryRequestId = :id")
-				.setParameter("track_number", track_number)
+				.setParameter("track_number", trackNumber)
 				.setParameter("id", id)
 				.executeUpdate();
 
