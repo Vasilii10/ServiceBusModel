@@ -2,7 +2,6 @@ package ru.nazarenko.se.project.service;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import ru.nazarenko.se.project.entities.DeliveryRequestDAO;
 import ru.nazarenko.se.project.model.*;
 
 import java.util.List;
@@ -32,8 +31,8 @@ public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 	}
 
 	@Override
-	public RequestServiceStatus getRequestStatusByTrack(String track) {
-		return DeliveryRequestDAO.getProposalStatusBy(track);
+	public RequestServiceStatus getRequestStatusByTrack(String trackNumber) {
+		return DeliveryRequestDAO.getProposalStatusBy(trackNumber);
 	}
 
 	@Override
@@ -42,23 +41,23 @@ public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 	}
 
 	@Override
-	public List<DeliveryRequest> getRequestsByStatus(RequestServiceStatus requestServiceStatus) {
-		return DeliveryRequestDAO.getProposalsByStatus(requestServiceStatus);
+	public List<DeliveryRequest> getRequestsByStatus(RequestServiceStatus serviceStatus) {
+		return DeliveryRequestDAO.getProposalsByStatus(serviceStatus);
 	}
 
 	@Override
-	public boolean updateRequestsStatusBy(long id, RequestServiceStatus status) {
-		return DeliveryRequestDAO.updateProposalStatusBy(id, status);
+	public boolean updateRequestsStatusBy(long id, RequestServiceStatus serviceStatus) {
+		return DeliveryRequestDAO.updateProposalStatusBy(id, serviceStatus);
 	}
 
 	@Override
-	public boolean updateRequestsStatusBy(String track, RequestServiceStatus status) {
-		return DeliveryRequestDAO.updateProposalStatusBy(track, status);
+	public boolean updateRequestsStatusBy(String trackNumber, RequestServiceStatus serviceStatus) {
+		return DeliveryRequestDAO.updateProposalStatusBy(trackNumber, serviceStatus);
 	}
 
 	@Override
-	public boolean writeTrackById(long id, String track_number) {
-		return DeliveryRequestDAO.writeTrackNumberByRequestId(id, track_number);
+	public boolean writeTrackById(long id, String trackNumber) {
+		return DeliveryRequestDAO.writeTrackNumberByRequestId(id, trackNumber);
 	}
 
 }

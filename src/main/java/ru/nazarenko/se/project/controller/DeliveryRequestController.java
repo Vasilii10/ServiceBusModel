@@ -18,13 +18,11 @@ public class DeliveryRequestController {
 		this.deliveryRequestService = deliveryRequestService;
 	}
 
-	// TODO: 29/04/2021 rename paths
-
 	/**
 	 * Создание заявки в сервисе
 	 * @return id
 	 */
-	@PostMapping(value = "/proposal/new")
+	@PostMapping(value = "/request/new")
 	public ResponseEntity<?> createNewProposal(@RequestBody DeliveryRequest deliveryRequest) {
 		try {
 			long id = deliveryRequestService.createNewRequest(deliveryRequest);
@@ -37,7 +35,7 @@ public class DeliveryRequestController {
 	/**
 	 * Получение всех заявок
 	 */
-	@GetMapping(value = "/proposals")
+	@GetMapping(value = "/requests")
 	public ResponseEntity<List<DeliveryRequest>> getAllProposals() {
 		final List<DeliveryRequest> deliveryRequests = deliveryRequestService.readAllRequests();
 
@@ -49,7 +47,7 @@ public class DeliveryRequestController {
 	/**
 	 * Получение заявки по id
 	 */
-	@GetMapping(value = "/proposal/{id}")
+	@GetMapping(value = "/request/{id}")
 	public ResponseEntity<DeliveryRequest> getProposalById(@PathVariable(name = "id") long id) {
 		final DeliveryRequest deliveryRequest = deliveryRequestService.getRequestBy(id);
 
@@ -61,7 +59,7 @@ public class DeliveryRequestController {
 	/**
 	 * Получение статуса заявки по id
 	 */
-	@GetMapping(value = "/proposal/status/{id}")
+	@GetMapping(value = "/request/status/{id}")
 	public ResponseEntity<RequestServiceStatus> getProposalStatusBy(@PathVariable(name = "id") int id) {
 		final RequestServiceStatus proposalStatus = deliveryRequestService.getRequestStatusById(id);
 
@@ -73,7 +71,7 @@ public class DeliveryRequestController {
 	/**
 	 * Получение статуса заявки по трек номеру
 	 */
-	@GetMapping(value = "/proposal/status/track/{track_number}")
+	@GetMapping(value = "/request/status/track/{track_number}")
 	public ResponseEntity<RequestServiceStatus> getProposalStatusBy(
 		@PathVariable(name = "track_number") String trackNumber) {
 
@@ -87,7 +85,7 @@ public class DeliveryRequestController {
 	/**
 	 * Получение заявок с определенным статусом
 	 */
-	@PostMapping(value = "/proposalsByStatus")
+	@PostMapping(value = "/requestsByStatus")
 	public ResponseEntity<List<DeliveryRequest>> getProposalWith(@RequestBody RequestServiceStatus status) {
 		final List<DeliveryRequest> newDeliveryRequests = deliveryRequestService.getRequestsByStatus(
 			status);
@@ -101,7 +99,7 @@ public class DeliveryRequestController {
 	 * Передача новых заявок
 	 * для СУТ
 	 */
-	@GetMapping(value = "/proposals/new")
+	@GetMapping(value = "/requestls/new")
 	public ResponseEntity<List<DeliveryRequest>> getNewProposals() {
 		final List<DeliveryRequest> newDeliveryRequests = deliveryRequestService.getRequestsByStatus(
 			RequestServiceStatus.NEW_CREATED);
@@ -115,7 +113,7 @@ public class DeliveryRequestController {
 	 * Запись трек номера для заявки по id
 	 * для СУТ
 	 */
-	@PutMapping(value = "/proposal/track/{id}")
+	@PutMapping(value = "/request/track/{id}")
 	public ResponseEntity<?> writeTrackForProposalById(@PathVariable(name = "id") long id,
 													   @RequestBody String track_number) {
 
@@ -129,7 +127,7 @@ public class DeliveryRequestController {
 	 * обновление/запись статуса по proposalId
 	 * для СУТ
 	 */
-	@PutMapping(value = "/proposal/status/update/{id}")
+	@PutMapping(value = "/request/status/update/{id}")
 	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "id") long id,
 													@RequestBody RequestServiceStatus newStatus) {
 		final boolean isUpdated = deliveryRequestService.updateRequestsStatusBy(id, newStatus);
@@ -143,7 +141,7 @@ public class DeliveryRequestController {
 	 * обновление/запись статуса по трек номеру
 	 * для СУТ
 	 */
-	@PutMapping(value = "/proposal/status/updatebytrack/{track_number}")
+	@PutMapping(value = "/request/status/updatebytrack/{track_number}")
 	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "track_number") String track,
 													@RequestBody RequestServiceStatus newStatus) {
 		final boolean isUpdated = deliveryRequestService.updateRequestsStatusBy(track, newStatus);

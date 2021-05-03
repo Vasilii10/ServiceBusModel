@@ -5,7 +5,5 @@ public enum RequestServiceStatus {
 	SHIPMENT,
 	DELIVERED,
 	CANCELED,
-	NEW_CREATED;
-
-
+	NEW_CREATED
 }
