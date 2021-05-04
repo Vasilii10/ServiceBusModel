@@ -99,7 +99,6 @@ public class DeliveryRequestController {
 
 	/**
 	 * Передача новых заявок
-	 * для СУТ
 	 */
 	@GetMapping(value = "/requests/new")
 	public ResponseEntity<List<DeliveryRequest>> getNewProposals() {
@@ -113,7 +112,6 @@ public class DeliveryRequestController {
 
 	/**
 	 * Запись трек номера для заявки по id
-	 * для СУТ
 	 */
 	@PutMapping(value = "/request/track/{id}")
 	public ResponseEntity<?> writeTrackForProposalById(@PathVariable(name = "id") long id,
@@ -128,8 +126,7 @@ public class DeliveryRequestController {
 	}
 
 	/**
-	 * обновление/запись статуса по proposalId
-	 * для СУТ
+	 * Обновление/запись статуса по proposalId
 	 */
 	@PutMapping(value = "/request/status/update/{id}")
 	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "id") long id,
@@ -142,8 +139,7 @@ public class DeliveryRequestController {
 	}
 
 	/**
-	 * обновление/запись статуса по трек номеру
-	 * для СУТ
+	 * Обновление/запись статуса по трек номеру
 	 */
 	@PutMapping(value = "/request/status/updatebytrack/{track_number}")
 	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "track_number") String track,
@@ -151,16 +147,6 @@ public class DeliveryRequestController {
 		final boolean isUpdated = deliveryRequestService.updateRequestsStatusBy(track, newStatus);
 
 		return isUpdated
-			? new ResponseEntity<>(HttpStatus.OK)
-			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
-	@DeleteMapping(value = "/request/delete/{id}")
-	public ResponseEntity<?> deleteBy(@PathVariable long id) {
-
-		final boolean isDeleted = deliveryRequestService.deleteRequest(id);
-
-		return isDeleted
 			? new ResponseEntity<>(HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
