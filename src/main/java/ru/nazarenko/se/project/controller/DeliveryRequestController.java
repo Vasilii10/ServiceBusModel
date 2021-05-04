@@ -19,7 +19,7 @@ public class DeliveryRequestController {
 	}
 
 	/**
-	 * Создание заявки в сервисе
+	 * Создание заявки
 	 *
 	 * @return id
 	 */
