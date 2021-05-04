@@ -7,51 +7,48 @@ import java.util.List;
 
 public class DeliveryRequestDAO {
 
-	public static DeliveryRequest findProposalById(long deliveryRequestId) {
+	public static DeliveryRequest findRequestById(long deliveryRequestId) {
 		return HibernateUtil.getSessionFactory()
 			.openSession()
 			.get(DeliveryRequest.class, deliveryRequestId);
 	}
 
-	public static RequestServiceStatus getProposalStatusBy(String trackNumber) {
+	public static RequestServiceStatus getRequestStatusBy(String trackNumber) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
+			String query = "select requestServiceStatus" +
+				" from DeliveryRequest where deliveryTrackNumber = :deliveryTrackNumber";
+
 			RequestServiceStatus serviceStatus = (RequestServiceStatus)
-				session
-					.createQuery("select requestServiceStatus" +
-						" from DeliveryRequest where deliveryTrackNumber = :deliveryTrackNumber")
+				session.createQuery(query)
 					.setParameter("deliveryTrackNumber", trackNumber)
 					.uniqueResult();
 
 			return serviceStatus;
 		} catch (Exception e) {
-
 			return RequestServiceStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!zx
 		}
-
 	}
 
-	public static RequestServiceStatus getProposalStatusBy(long id) {
+	public static RequestServiceStatus getRequestStatusBy(long id) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
+			String query = "select requestServiceStatus" +
+				" from DeliveryRequest where deliveryRequestId = :proposalId";
+
 			RequestServiceStatus serviceStatus = (RequestServiceStatus)
-				session
-					.createQuery("select requestServiceStatus" +
-						" from DeliveryRequest where deliveryRequestId = :proposalId")
+				session.createQuery(query)
 					.setParameter("proposalId", id)
 					.uniqueResult();
 
 			return serviceStatus;
 		} catch (Exception e) {
-
 			return RequestServiceStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!
 		}
 	}
 
-	public static long createNewProposal(DeliveryRequest deliveryRequest) {
-
-
-		// TODO: 27/04/2021 проверки на заполенность полей? 
+	public static long createNewRequest(DeliveryRequest deliveryRequest)
+		throws RequestNotCreatedException {
 
 		Transaction transaction = null;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -66,55 +63,80 @@ public class DeliveryRequestDAO {
 				transaction.rollback();
 			}
 
-			// а лучше иксепшн
-			return 0;
+			throw new RequestNotCreatedException();
 		}
 	}
 
-	public static List<DeliveryRequest> getAllProposals() {
-		return
-			(List<DeliveryRequest>) HibernateUtil.getSessionFactory()
-				.openSession()
-				.createQuery("From DeliveryRequest")
-				.list();
+	public static List<DeliveryRequest> getAllRequests() {
+		String getAllQuery = "From DeliveryRequest";
+
+		return (List<DeliveryRequest>) HibernateUtil.getSessionFactory()
+			.openSession()
+			.createQuery(getAllQuery)
+			.list();
 	}
 
-	public static List<DeliveryRequest> getProposalsByStatus(RequestServiceStatus serviceStatus) {
-		return
-			(List<DeliveryRequest>) HibernateUtil.getSessionFactory()
-				.openSession()
-				.createQuery("From DeliveryRequest where requestServiceStatus = :status")
-				.setParameter("status", serviceStatus)
-				.list();
+	public static List<DeliveryRequest> getByStatus(RequestServiceStatus serviceStatus) {
+		String getStatusQuery = "From DeliveryRequest where requestServiceStatus = :status";
+
+		return (List<DeliveryRequest>) HibernateUtil.getSessionFactory()
+			.openSession()
+			.createQuery(getStatusQuery)
+			.setParameter("status", serviceStatus)
+			.list();
 	}
 
-	public static boolean updateProposalStatusBy(String trackNumber, RequestServiceStatus requestServiceStatus) {
-		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
+	public static boolean updateStatusBy(String trackNumber, RequestServiceStatus requestServiceStatus)
+		throws TrackNumberNotFoundException {
 
-		Transaction transaction = null;
-		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-			transaction = session.beginTransaction();
+		if (trackNumberFoundInDb(trackNumber)) {
+			Transaction transaction = null;
+			try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+				transaction = session.beginTransaction();
 
-			session.createQuery("update DeliveryRequest set requestServiceStatus = :newStatus " +
-				"where deliveryTrackNumber = :trackNumber")
-				.setParameter("newStatus", requestServiceStatus)
-				.setParameter("trackNumber", trackNumber)
-				.executeUpdate();
+				String updateQuery = "update DeliveryRequest set requestServiceStatus = :newStatus " +
+					"where deliveryTrackNumber = :trackNumber";
 
-			transaction.commit();
+				session.createQuery(updateQuery)
+					.setParameter("newStatus", requestServiceStatus)
+					.setParameter("trackNumber", trackNumber)
+					.executeUpdate();
 
-			return true;
-		} catch (Exception e) {
+				transaction.commit();
 
-			if (transaction != null) {
-				transaction.rollback();
+				return true;
+			} catch (Exception e) {
+
+				if (transaction != null) {
+					transaction.rollback();
+				}
+
+				return false;
 			}
-
-			return false;
+		} else {
+			throw new TrackNumberNotFoundException();
 		}
 	}
 
-	public static boolean updateProposalStatusBy(long id, RequestServiceStatus newProposalStatus) {
+	private static boolean trackNumberFoundInDb(String trackNumber) {
+		long counter;
+
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+			String countQuery = "select count(delivery.deliveryTrackNumber) " +
+				"from DeliveryRequest delivery where " +
+				"deliveryTrackNumber =: trackNumber";
+
+			counter = (Long) session
+				.createQuery(countQuery)
+				.setParameter("trackNumber", trackNumber)
+				.uniqueResult();
+		}
+
+		return counter == 1;
+	}
+
+	public static boolean updateStatusBy(long id, RequestServiceStatus newProposalStatus) {
 		// TODO: 25/04/2021 предусмотреть исключение если статуса нет
 
 		Transaction transaction = null;
@@ -146,7 +168,8 @@ public class DeliveryRequestDAO {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			transaction = session.beginTransaction();
 
-			session.createQuery("delete DeliveryRequest where deliveryRequestId = :id")
+			String deleteQuery = "delete DeliveryRequest where deliveryRequestId = :id";
+			session.createQuery(deleteQuery)
 				.setParameter("id", id)
 				.executeUpdate();
 
@@ -163,30 +186,35 @@ public class DeliveryRequestDAO {
 		}
 	}
 
-	public static boolean writeTrackNumberByRequestId(long id, String trackNumber) {
+	public static boolean writeTrackNumberByRequestId(long id, String trackNumber) throws TrackNumberIsExsistedException {
 
 		// FIXME: 28/04/2021 проверить пусто ли, если нет - ошибка
+		if (!trackNumberFoundInDb(trackNumber)) {
+			Transaction transaction;
+			try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+				transaction = session.beginTransaction();
 
-		Transaction transaction = null;
-		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-			transaction = session.beginTransaction();
+				String query = "update DeliveryRequest set deliveryTrackNumber" +
+					" = :track_number where deliveryRequestId = :id";
 
-			session.createQuery("update DeliveryRequest set deliveryTrackNumber" +
-				" = :track_number where deliveryRequestId = :id")
-				.setParameter("track_number", trackNumber)
-				.setParameter("id", id)
-				.executeUpdate();
+				session.createQuery(query)
+					.setParameter("track_number", trackNumber)
+					.setParameter("id", id)
+					.executeUpdate();
 
-			transaction.commit();
+				transaction.commit();
 
-			return true;
-		} catch (Exception e) {
+				return true;
+			} catch (Exception e) {
 
 //			if (transaction != null) {
 //				transaction.rollback();
 //			}
 
-			return false;
+				return false;
+			}
+		} else {
+			throw new TrackNumberIsExsistedException();
 		}
 	}
 }
