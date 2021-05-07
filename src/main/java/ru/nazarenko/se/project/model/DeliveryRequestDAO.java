@@ -13,7 +13,7 @@ public class DeliveryRequestDAO {
 			.get(DeliveryRequest.class, deliveryRequestId);
 	}
 
-	public static RequestServiceStatus getRequestStatusBy(String trackNumber) {
+	public static RequestServiceStatus getRequestStatusBy(String trackNumber) throws RequestNotFoundException {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
 			String query = "select requestServiceStatus" +
@@ -24,13 +24,15 @@ public class DeliveryRequestDAO {
 					.setParameter("deliveryTrackNumber", trackNumber)
 					.uniqueResult();
 
+			if (serviceStatus == null){
+				throw new RequestNotFoundException();
+			}
+
 			return serviceStatus;
-		} catch (Exception e) {
-			return RequestServiceStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!zx
 		}
 	}
 
-	public static RequestServiceStatus getRequestStatusBy(long id) {
+	public static RequestServiceStatus getRequestStatusBy(long id) throws RequestNotFoundException {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
 			String query = "select requestServiceStatus" +
@@ -41,9 +43,11 @@ public class DeliveryRequestDAO {
 					.setParameter("proposalId", id)
 					.uniqueResult();
 
+			if (serviceStatus == null){
+				throw new RequestNotFoundException();
+			}
+
 			return serviceStatus;
-		} catch (Exception e) {
-			return RequestServiceStatus.CANCELED; // FIXME: 25/04/2021 исклжючение сделать!
 		}
 	}
 

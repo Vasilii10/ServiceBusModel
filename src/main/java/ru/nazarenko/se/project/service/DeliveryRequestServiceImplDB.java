@@ -31,12 +31,12 @@ public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 	}
 
 	@Override
-	public RequestServiceStatus getRequestStatusByTrack(String trackNumber) {
+	public RequestServiceStatus getRequestStatusByTrack(String trackNumber) throws RequestNotFoundException {
 		return DeliveryRequestDAO.getRequestStatusBy(trackNumber);
 	}
 
 	@Override
-	public RequestServiceStatus getRequestStatusById(long id) {
+	public RequestServiceStatus getRequestStatusById(long id) throws RequestNotFoundException {
 		return DeliveryRequestDAO.getRequestStatusBy(id);
 	}
 

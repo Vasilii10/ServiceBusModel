@@ -24,7 +24,7 @@ public class DeliveryRequestController {
 	 * @return id
 	 */
 	@PostMapping(value = "/request/new")
-	public ResponseEntity<?> createNewProposal(@RequestBody DeliveryRequest deliveryRequest) {
+	public ResponseEntity<?> createNewRequest(@RequestBody DeliveryRequest deliveryRequest) {
 		try {
 			long createdId = deliveryRequestService.createNewRequest(deliveryRequest);
 
@@ -38,7 +38,7 @@ public class DeliveryRequestController {
 	 * Получение всех заявок
 	 */
 	@GetMapping(value = "/requests")
-	public ResponseEntity<List<DeliveryRequest>> getAllProposals() {
+	public ResponseEntity<List<DeliveryRequest>> getAllRequests() {
 		final List<DeliveryRequest> deliveryRequests = deliveryRequestService.readAllRequests();
 
 		return deliveryRequests != null && !deliveryRequests.isEmpty()
@@ -50,7 +50,7 @@ public class DeliveryRequestController {
 	 * Получение заявки по id
 	 */
 	@GetMapping(value = "/request/{id}")
-	public ResponseEntity<DeliveryRequest> getProposalById(@PathVariable(name = "id") long id) {
+	public ResponseEntity<DeliveryRequest> getRequestById(@PathVariable(name = "id") long id) {
 		final DeliveryRequest deliveryRequest = deliveryRequestService.getRequestBy(id);
 
 		return deliveryRequest != null
@@ -62,33 +62,39 @@ public class DeliveryRequestController {
 	 * Получение статуса заявки по id
 	 */
 	@GetMapping(value = "/request/status/{id}")
-	public ResponseEntity<RequestServiceStatus> getProposalStatusBy(@PathVariable(name = "id") int id) {
-		final RequestServiceStatus proposalStatus = deliveryRequestService.getRequestStatusById(id);
+	public ResponseEntity<RequestServiceStatus> getRequestStatusBy(@PathVariable(name = "id") long id) {
+		final RequestServiceStatus proposalStatus;
+		try {
+			proposalStatus = deliveryRequestService.getRequestStatusById(id);
 
-		return proposalStatus != null
-			? new ResponseEntity<>(proposalStatus, HttpStatus.OK)
-			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(proposalStatus, HttpStatus.OK);
+		} catch (RequestNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
 	 * Получение статуса заявки по трек номеру
 	 */
 	@GetMapping(value = "/request/status/track/{track_number}")
-	public ResponseEntity<RequestServiceStatus> getProposalStatusBy(
+	public ResponseEntity<RequestServiceStatus> getRequestStatusBy(
 		@PathVariable(name = "track_number") String trackNumber) {
 
-		final RequestServiceStatus proposalStatus = deliveryRequestService.getRequestStatusByTrack(trackNumber);
+		final RequestServiceStatus proposalStatus;
+		try {
+			proposalStatus = deliveryRequestService.getRequestStatusByTrack(trackNumber);
 
-		return proposalStatus != null
-			? new ResponseEntity<>(proposalStatus, HttpStatus.OK)
-			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(proposalStatus, HttpStatus.OK);
+		} catch (RequestNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
-	 * Получение заявок с определенным статусом
+	 * Получение заявок с статусом
 	 */
 	@PostMapping(value = "/requestsByStatus")
-	public ResponseEntity<List<DeliveryRequest>> getProposalWith(@RequestBody RequestServiceStatus status) {
+	public ResponseEntity<List<DeliveryRequest>> getRequestWith(@RequestBody RequestServiceStatus status) {
 		final List<DeliveryRequest> newDeliveryRequests = deliveryRequestService.getRequestsByStatus(
 			status);
 
@@ -101,7 +107,7 @@ public class DeliveryRequestController {
 	 * Передача новых заявок
 	 */
 	@GetMapping(value = "/requests/new")
-	public ResponseEntity<List<DeliveryRequest>> getNewProposals() {
+	public ResponseEntity<List<DeliveryRequest>> getNewRequests() {
 		final List<DeliveryRequest> newDeliveryRequests = deliveryRequestService.getRequestsByStatus(
 			RequestServiceStatus.NEW_CREATED);
 
@@ -114,13 +120,13 @@ public class DeliveryRequestController {
 	 * Запись трек номера для заявки по id
 	 */
 	@PutMapping(value = "/request/track/{id}")
-	public ResponseEntity<?> writeTrackForProposalById(@PathVariable(name = "id") long id,
-													   @RequestBody String track_number) {
+	public ResponseEntity<?> writeTrackForRequestById(@PathVariable(name = "id") long id,
+													  @RequestBody String trackNumber) {
 		try {
-			deliveryRequestService.writeTrackById(id, track_number);
+			deliveryRequestService.writeTrackById(id, trackNumber);
 
 			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (TrackNumberIsExsistedException trackNumberIsExsistedException) {
+		} catch (TrackNumberIsExsistedException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 		}
 	}
@@ -129,8 +135,8 @@ public class DeliveryRequestController {
 	 * Обновление/запись статуса по proposalId
 	 */
 	@PutMapping(value = "/request/status/update/{id}")
-	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "id") long id,
-													@RequestBody RequestServiceStatus newStatus) {
+	public ResponseEntity<?> updateRequestStatusBy(@PathVariable(name = "id") long id,
+												   @RequestBody RequestServiceStatus newStatus) {
 		final boolean isUpdated = deliveryRequestService.updateRequestsStatusBy(id, newStatus);
 
 		return isUpdated
@@ -142,8 +148,8 @@ public class DeliveryRequestController {
 	 * Обновление/запись статуса по трек номеру
 	 */
 	@PutMapping(value = "/request/status/updatebytrack/{track_number}")
-	public ResponseEntity<?> updateProposalStatusBy(@PathVariable(name = "track_number") String track,
-													@RequestBody RequestServiceStatus newStatus) {
+	public ResponseEntity<?> updateRequestStatusBy(@PathVariable(name = "track_number") String track,
+												   @RequestBody RequestServiceStatus newStatus) {
 		final boolean isUpdated = deliveryRequestService.updateRequestsStatusBy(track, newStatus);
 
 		return isUpdated

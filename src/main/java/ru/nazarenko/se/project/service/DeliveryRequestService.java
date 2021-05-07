@@ -13,9 +13,9 @@ public interface DeliveryRequestService {
 
 	DeliveryRequest getRequestBy(long id);
 
-	RequestServiceStatus getRequestStatusByTrack(String trackNumber);
+	RequestServiceStatus getRequestStatusByTrack(String trackNumber) throws RequestNotFoundException;
 
-	RequestServiceStatus getRequestStatusById(long id);
+	RequestServiceStatus getRequestStatusById(long id) throws RequestNotFoundException;
 
 	List<DeliveryRequest> getRequestsByStatus(RequestServiceStatus requestServiceStatus);
 
