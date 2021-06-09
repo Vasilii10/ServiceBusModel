@@ -60,7 +60,7 @@ public class DeliveryRequestServiceImplDB implements DeliveryRequestService {
 	}
 
 	@Override
-	public void writeTrackById(long id, String trackNumber) throws TrackNumberIsExsistedException {
+	public void writeTrackById(long id, String trackNumber) throws TrackNumberIsNotExistsException {
 		DeliveryRequestDAO.writeTrackNumberByRequestId(id, trackNumber);
 	}
 

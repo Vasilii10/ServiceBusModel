@@ -23,7 +23,7 @@ public interface DeliveryRequestService {
 
 	boolean updateRequestsStatusBy(String trackNumber, RequestServiceStatus serviceStatus);
 
-	void writeTrackById(long id, String trackNumber) throws TrackNumberIsExsistedException;
+	void writeTrackById(long id, String trackNumber) throws TrackNumberIsNotExistsException;
 
 	boolean deleteRequest(long id);
 }

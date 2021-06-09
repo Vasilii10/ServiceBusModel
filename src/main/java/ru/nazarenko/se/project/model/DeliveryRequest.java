@@ -2,14 +2,16 @@ package ru.nazarenko.se.project.model;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "deliveryrequest")
-public class DeliveryRequest {
+public class DeliveryRequest implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "delivery_request_id")
-	private long deliveryRequestId;
+	private Long deliveryRequestId;
 
 	@Column(name = "request_service_status")
 	@Enumerated(EnumType.STRING)

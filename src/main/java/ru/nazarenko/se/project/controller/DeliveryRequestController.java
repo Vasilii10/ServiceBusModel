@@ -1,5 +1,6 @@
 package ru.nazarenko.se.project.controller;
 
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import ru.nazarenko.se.project.service.DeliveryRequestService;
 
 import java.util.List;
 
+@Api(value = "DeliveryRequestController")
 @RestController
 public class DeliveryRequestController {
 
@@ -18,11 +20,7 @@ public class DeliveryRequestController {
 		this.deliveryRequestService = deliveryRequestService;
 	}
 
-	/**
-	 * Создание заявки
-	 *
-	 * @return id
-	 */
+	@ApiOperation(value = "Create new requests ", response = DeliveryRequest.class, tags = "Create request")
 	@PostMapping(value = "/request/new")
 	public ResponseEntity<?> createNewRequest(@RequestBody DeliveryRequest deliveryRequest) {
 		try {
@@ -34,9 +32,7 @@ public class DeliveryRequestController {
 		}
 	}
 
-	/**
-	 * Получение всех заявок
-	 */
+	@ApiOperation(value = "Get list of all requests", response = Iterable.class, tags = "Get existed all requests")
 	@GetMapping(value = "/requests")
 	public ResponseEntity<List<DeliveryRequest>> getAllRequests() {
 		final List<DeliveryRequest> deliveryRequests = deliveryRequestService.readAllRequests();
@@ -46,9 +42,7 @@ public class DeliveryRequestController {
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	/**
-	 * Получение заявки по id
-	 */
+	@ApiOperation(value = "Get request by id", response = DeliveryRequest.class, tags = "Get request by specific id")
 	@GetMapping(value = "/request/{id}")
 	public ResponseEntity<DeliveryRequest> getRequestById(@PathVariable(name = "id") long id) {
 		final DeliveryRequest deliveryRequest = deliveryRequestService.getRequestBy(id);
@@ -58,9 +52,7 @@ public class DeliveryRequestController {
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	/**
-	 * Получение статуса заявки по id
-	 */
+	@ApiOperation(value = "Get request status by id", response = Iterable.class, tags = "Get status by id")
 	@GetMapping(value = "/request/status/{id}")
 	public ResponseEntity<RequestServiceStatus> getRequestStatusBy(@PathVariable(name = "id") long id) {
 		final RequestServiceStatus proposalStatus;
@@ -73,13 +65,11 @@ public class DeliveryRequestController {
 		}
 	}
 
-	/**
-	 * Получение статуса заявки по трек номеру
-	 */
+	@ApiOperation(value = "Get request status by track number", response = HttpStatus.class, tags = "Get status by " +
+		"track number")
 	@GetMapping(value = "/request/status/track/{track_number}")
 	public ResponseEntity<RequestServiceStatus> getRequestStatusBy(
 		@PathVariable(name = "track_number") String trackNumber) {
-
 		final RequestServiceStatus proposalStatus;
 		try {
 			proposalStatus = deliveryRequestService.getRequestStatusByTrack(trackNumber);
@@ -90,35 +80,33 @@ public class DeliveryRequestController {
 		}
 	}
 
-	/**
-	 * Получение заявок с статусом
-	 */
+	@ApiOperation(value = "Get requests with specific status", response = Iterable.class, tags = "Get request by " +
+		"status")
 	@PostMapping(value = "/requestsByStatus")
 	public ResponseEntity<List<DeliveryRequest>> getRequestWith(@RequestBody RequestServiceStatus status) {
 		final List<DeliveryRequest> newDeliveryRequests = deliveryRequestService.getRequestsByStatus(
-			status);
+			status
+		);
 
 		return newDeliveryRequests != null && !newDeliveryRequests.isEmpty()
 			? new ResponseEntity<>(newDeliveryRequests, HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	/**
-	 * Передача новых заявок
-	 */
+	@ApiOperation(value = "Get all requests with status NEW_CREATED", response = Iterable.class, tags = "Get new " +
+		"requests")
 	@GetMapping(value = "/requests/new")
 	public ResponseEntity<List<DeliveryRequest>> getNewRequests() {
 		final List<DeliveryRequest> newDeliveryRequests = deliveryRequestService.getRequestsByStatus(
-			RequestServiceStatus.NEW_CREATED);
+			RequestServiceStatus.NEW_CREATED
+		);
 
 		return newDeliveryRequests != null && !newDeliveryRequests.isEmpty()
 			? new ResponseEntity<>(newDeliveryRequests, HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	/**
-	 * Запись трек номера для заявки по id
-	 */
+	@ApiOperation(value = "Put track number to request", response = Iterable.class, tags = "Put track number")
 	@PutMapping(value = "/request/track/{id}")
 	public ResponseEntity<?> writeTrackForRequestById(@PathVariable(name = "id") long id,
 													  @RequestBody String trackNumber) {
@@ -126,35 +114,37 @@ public class DeliveryRequestController {
 			deliveryRequestService.writeTrackById(id, trackNumber);
 
 			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (TrackNumberIsExsistedException e) {
+		} catch (TrackNumberIsNotExistsException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 		}
 	}
 
-	/**
-	 * Обновление/запись статуса по proposalId
-	 */
+	@ApiOperation(value = "Update request status by id", response = HttpStatus.class, tags = "Update status by id")
 	@PutMapping(value = "/request/status/update/{id}")
 	public ResponseEntity<?> updateRequestStatusBy(@PathVariable(name = "id") long id,
 												   @RequestBody RequestServiceStatus newStatus) {
-		final boolean isUpdated = deliveryRequestService.updateRequestsStatusBy(id, newStatus);
 
-		return isUpdated
+		return deliveryRequestService.updateRequestsStatusBy(id, newStatus)
 			? new ResponseEntity<>(HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
-	/**
-	 * Обновление/запись статуса по трек номеру
-	 */
+	@ApiOperation(value = "Update request status by track number", response = HttpStatus.class, tags = "Update status")
 	@PutMapping(value = "/request/status/updatebytrack/{track_number}")
 	public ResponseEntity<?> updateRequestStatusBy(@PathVariable(name = "track_number") String track,
 												   @RequestBody RequestServiceStatus newStatus) {
-		final boolean isUpdated = deliveryRequestService.updateRequestsStatusBy(track, newStatus);
 
-		return isUpdated
+		return deliveryRequestService.updateRequestsStatusBy(track, newStatus)
 			? new ResponseEntity<>(HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@ApiOperation(value = "temporary ability", response = HttpStatus.class, tags = "Delete request")
+	@DeleteMapping(value = "/delete/{id}")
+	public ResponseEntity<?> deleteRequestStatusBy(@PathVariable(name = "id") Long id) {
+
+		return deliveryRequestService.deleteRequest(id)
+			? new ResponseEntity<>(HttpStatus.OK)
+			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }
