@@ -1,1 +1,8 @@
 #Project description
+
+http://localhost:4444/swagger-ui.html#/Get_request_by_status
+
+# тут инструкцию сделать
+
+docker-compose up
+docker-compose down
