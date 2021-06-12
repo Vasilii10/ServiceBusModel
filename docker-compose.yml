@@ -15,7 +15,7 @@ services:
     image: servicebusdocker:latest
     build: .
     ports:
-      - "4444:8080"
+      - "${EXPOSE_PORT}:8080"
     depends_on:
       - postgres
     links:

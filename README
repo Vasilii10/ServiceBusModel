@@ -1,8 +1,17 @@
-#Project description
+#BackEnd Service ServiceBusModel
 
-http://localhost:4444/swagger-ui.html#/Get_request_by_status
+# Prerequisites
+ - JDK 1.8
+ - Docker
 
-# тут инструкцию сделать
+# Сборка проекта
+	mvn package
 
-docker-compose up
-docker-compose down
+# Для запуска системы выполнить в директории проекта:
+	docker-compose up -d
+
+# Для остановки системы и удаления всех образов:
+	docker-compose down --rmi all
+
+# Доступ к SwaggerUI:
+	http://{LOCAL_IP}}:{EXPOSE_PORT}/swagger-ui.html

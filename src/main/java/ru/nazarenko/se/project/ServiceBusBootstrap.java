@@ -19,7 +19,6 @@ public class ServiceBusBootstrap {
 		try {
 			Configuration configuration = new Configuration();
 			configuration.configure();
-
 		} catch (HibernateException ex) {
 			throw new ExceptionInInitializerError(ex);
 		}
