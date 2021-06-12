@@ -10,17 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ServiceBusBootstrap {
 
 	public static void main(String[] args) {
-
-		//// FIXME: 25/04/2021 поставить в загрузчик
-
-		//todo записывать его когда СУТ скажет
-
-		// // TODO: 27/04/2021 обработка ошибок транзакций
-
-		// // TODO: 27/04/2021 вынос конфигурации 
-
 		loadHibernateConfig();
-
 
 		SpringApplication.run(ServiceBusBootstrap.class, args);
 	}
@@ -29,7 +19,6 @@ public class ServiceBusBootstrap {
 		try {
 			Configuration configuration = new Configuration();
 			configuration.configure();
-
 		} catch (HibernateException ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

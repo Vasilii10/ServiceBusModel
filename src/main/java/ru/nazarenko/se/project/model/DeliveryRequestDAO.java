@@ -24,7 +24,7 @@ public class DeliveryRequestDAO {
 					.setParameter("deliveryTrackNumber", trackNumber)
 					.uniqueResult();
 
-			if (serviceStatus == null){
+			if (serviceStatus == null) {
 				throw new RequestNotFoundException();
 			}
 
@@ -43,7 +43,7 @@ public class DeliveryRequestDAO {
 					.setParameter("proposalId", id)
 					.uniqueResult();
 
-			if (serviceStatus == null){
+			if (serviceStatus == null) {
 				throw new RequestNotFoundException();
 			}
 
@@ -190,9 +190,8 @@ public class DeliveryRequestDAO {
 		}
 	}
 
-	public static boolean writeTrackNumberByRequestId(long id, String trackNumber) throws TrackNumberIsExsistedException {
+	public static boolean writeTrackNumberByRequestId(long id, String trackNumber) throws TrackNumberIsNotExistsException {
 
-		// FIXME: 28/04/2021 проверить пусто ли, если нет - ошибка
 		if (!trackNumberFoundInDb(trackNumber)) {
 			Transaction transaction;
 			try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -211,14 +210,10 @@ public class DeliveryRequestDAO {
 				return true;
 			} catch (Exception e) {
 
-//			if (transaction != null) {
-//				transaction.rollback();
-//			}
-
 				return false;
 			}
 		} else {
-			throw new TrackNumberIsExsistedException();
+			throw new TrackNumberIsNotExistsException();
 		}
 	}
 }
